@@ -3,747 +3,1098 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Modern zikirmatik ve dua uygulaması">
-    <meta name="theme-color" content="#ffffff">
-    <title>Duha - Zikirmatik & Dua</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    
+    <title>DUHA</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
         * {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
-        .fade-in {
-            animation: fadeIn 0.3s ease-in;
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
         }
-        
+
+        .header {
+            background: white;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .hamburger {
+            width: 30px;
+            height: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            width: 100%;
+            height: 3px;
+            background: #2c3e50;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .menu {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background: white;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            transition: right 0.3s;
+            z-index: 2000;
+            overflow-y: auto;
+        }
+
+        .menu.active {
+            right: 0;
+        }
+
+        .menu-header {
+            padding: 1.5rem;
+            background: #2c3e50;
+            color: white;
+            font-weight: 600;
+        }
+
+        .menu-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .menu-item:hover {
+            background: #f8f9fa;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            z-index: 1500;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .section.active {
+            display: block;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
-        .counter-btn {
-            transition: all 0.15s ease;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
-        
-        .counter-btn:active {
-            transform: scale(0.96);
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #2c3e50;
         }
-        
-        .modal {
-            backdrop-filter: blur(8px);
-            background: rgba(0, 0, 0, 0.4);
+
+        .input-group {
+            margin-bottom: 1rem;
         }
-        
-        .modal-content {
-            animation: slideUp 0.3s ease;
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #555;
         }
-        
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
         }
-        
-        .sure-card {
-            transition: all 0.2s ease;
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
             cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
         }
-        
-        .sure-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
         }
-        
-        .menu-drawer {
-            box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
-            animation: slideInRight 0.3s ease;
+
+        .btn-primary:hover {
+            background: #2980b9;
         }
-        
-        @keyframes slideInRight {
-            from { transform: translateX(100%); }
-            to { transform: translateX(0); }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
         }
-        
-        body.dark-mode {
-            background: #1a1a1a;
-            color: #f5f5f5;
+
+        .btn-success:hover {
+            background: #229954;
         }
-        
-        .dark-mode .bg-white {
-            background: #2d2d2d !important;
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
         }
-        
-        .dark-mode .bg-gray-50 {
-            background: #1a1a1a !important;
+
+        .btn-danger:hover {
+            background: #c0392b;
         }
-        
-        .dark-mode .text-gray-800 {
-            color: #f5f5f5 !important;
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
         }
-        
-        .dark-mode .text-gray-600 {
-            color: #b0b0b0 !important;
+
+        .transaction-list {
+            margin-top: 1.5rem;
         }
-        
-        .dark-mode .border-gray-200 {
-            border-color: #404040 !important;
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
         }
-        
-        .dark-mode .menu-drawer {
-            background: #2d2d2d;
+
+        .transaction-info {
+            flex: 1;
         }
-        
-        .dark-mode .sure-card {
-            background: #333 !important;
+
+        .transaction-amount {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-right: 1rem;
+        }
+
+        .transaction-amount.income {
+            color: #27ae60;
+        }
+
+        .transaction-amount.expense {
+            color: #e74c3c;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-card.income {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+        }
+
+        .stat-card.expense {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .stat-card.net {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .chart-container {
+            max-width: 400px;
+            margin: 2rem auto;
+        }
+
+        .zikir-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .zikir-button {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 3rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .zikir-button:active {
+            transform: scale(0.95);
+        }
+
+        .zikir-info {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 1.25rem;
+            color: #555;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #27ae60, #229954);
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .zikir-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .zikir-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .zikir-card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .zikir-count {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin: 1rem 0;
+        }
+
+        .zikir-card-btn {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            margin: 1rem auto;
+            display: block;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            transition: all 0.2s;
+        }
+
+        .zikir-card-btn:active {
+            transform: scale(0.95);
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .zikir-button {
+                width: 200px;
+                height: 200px;
+                font-size: 2.5rem;
+            }
+
+            .container {
+                padding: 1rem 0.75rem;
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: #27ae60;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 3000;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .notification.show {
+            display: block;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid #3498db;
+            background: white;
+            color: #3498db;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .tab-btn.active {
+            background: #3498db;
+            color: white;
+        }
+
+        .date-input {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .date-input input {
+            flex: 1;
         }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
-    
-    <!-- Header -->
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
-        <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
-            <h1 class="text-xl font-semibold text-gray-800">Duha</h1>
-            <div class="flex items-center gap-2">
-                <button onclick="toggleDarkMode()" class="p-2 hover:bg-gray-100 rounded-lg transition">
-                    <svg id="darkModeIcon" class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-                    </svg>
-                </button>
-                <button onclick="toggleMenu()" class="p-2 hover:bg-gray-100 rounded-lg transition">
-                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <!-- Menu Overlay -->
-    <div id="menuOverlay" class="fixed inset-0 modal z-50 hidden" onclick="toggleMenu()">
-        <div class="menu-drawer fixed top-0 right-0 h-full w-80 bg-white" onclick="event.stopPropagation()">
-            <div class="p-4 border-b border-gray-200 flex items-center justify-between">
-                <h2 class="text-lg font-semibold text-gray-800">Menü</h2>
-                <button onclick="toggleMenu()" class="p-2 hover:bg-gray-100 rounded-lg">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-            
-            <nav class="p-3 space-y-1">
-                <button onclick="showTab('zikirler')" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-gray-100 transition text-gray-700 text-sm">
-                    📿 Zikirler
-                </button>
-                <button onclick="showTab('dualar')" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-gray-100 transition text-gray-700 text-sm">
-                    🤲 Dualar
-                </button>
-                <button onclick="showModal('surelerModal')" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-gray-100 transition text-gray-700 text-sm">
-                    📖 Sureler
-                </button>
-                <button onclick="showTab('istatistikler')" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-gray-100 transition text-gray-700 text-sm">
-                    📊 İstatistikler
-                </button>
-                <hr class="my-2 border-gray-200">
-                <button onclick="showModal('addZikirModal')" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-gray-100 transition text-gray-700 text-sm">
-                    ➕ Zikir Ekle
-                </button>
-                <button onclick="resetAllData()" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-red-50 transition text-red-600 text-sm">
-                    🗑️ Verileri Sıfırla
-                </button>
-            </nav>
-            
-            <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 text-xs text-gray-500">
-                <p class="font-medium">Geliştirici</p>
-                <p>CodeBug2026 - Hakan Aytaş</p>
-                <p>Diyarbakır, Bağlar</p>
-                <p class="text-blue-600">hffhakan@gmail.com</p>
-            </div>
+<body>
+    <div class="header">
+        <div class="logo">DUHA</div>
+        <div class="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
     </div>
 
-    <!-- Main Content -->
-    <main class="max-w-md mx-auto px-4 py-4">
-        
-        <!-- Zikirler Tab -->
-        <div id="zikirler" class="tab-content fade-in space-y-3">
-            
-            <!-- Namaz Sonrası Tesbihat -->
-            <div class="bg-white rounded-xl p-4 shadow-sm">
-                <h3 class="text-sm font-semibold text-gray-800 mb-3">Namaz Sonrası Tesbihat</h3>
-                <div class="space-y-2">
-                    <button onclick="incrementZikir('subhanallah')" class="counter-btn w-full bg-blue-500 hover:bg-blue-600 text-white rounded-lg p-3 flex items-center justify-between">
-                        <span class="text-sm font-medium">Subhanallah (33)</span>
-                        <span class="text-lg font-bold" id="subhanallah-count">0</span>
-                    </button>
-                    <button onclick="incrementZikir('elhamdulillah')" class="counter-btn w-full bg-green-500 hover:bg-green-600 text-white rounded-lg p-3 flex items-center justify-between">
-                        <span class="text-sm font-medium">Elhamdulillah (33)</span>
-                        <span class="text-lg font-bold" id="elhamdulillah-count">0</span>
-                    </button>
-                    <button onclick="incrementZikir('allahuekber')" class="counter-btn w-full bg-purple-500 hover:bg-purple-600 text-white rounded-lg p-3 flex items-center justify-between">
-                        <span class="text-sm font-medium">Allahuekber (33)</span>
-                        <span class="text-lg font-bold" id="allahuekber-count">0</span>
-                    </button>
-                </div>
-            </div>
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
-            <!-- Genel Zikirler -->
-            <div class="bg-white rounded-xl p-4 shadow-sm">
-                <h3 class="text-sm font-semibold text-gray-800 mb-3">Genel Zikirler</h3>
-                <div class="space-y-2">
-                    <button onclick="incrementZikir('tevhid')" class="counter-btn w-full bg-orange-500 hover:bg-orange-600 text-white rounded-lg p-3 flex items-center justify-between">
-                        <span class="text-sm font-medium">Kelime-i Tevhid</span>
-                        <span class="text-lg font-bold" id="tevhid-count">0</span>
-                    </button>
-                    <button onclick="incrementZikir('salavat')" class="counter-btn w-full bg-pink-500 hover:bg-pink-600 text-white rounded-lg p-3 flex items-center justify-between">
-                        <span class="text-sm font-medium">Salavat-ı Şerife</span>
-                        <span class="text-lg font-bold" id="salavat-count">0</span>
-                    </button>
-                    <button onclick="incrementZikir('istigfar')" class="counter-btn w-full bg-teal-500 hover:bg-teal-600 text-white rounded-lg p-3 flex items-center justify-between">
-                        <span class="text-sm font-medium">İstiğfar</span>
-                        <span class="text-lg font-bold" id="istigfar-count">0</span>
-                    </button>
-                    <button onclick="incrementZikir('hamd')" class="counter-btn w-full bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg p-3 flex items-center justify-between">
-                        <span class="text-sm font-medium">Hamd</span>
-                        <span class="text-lg font-bold" id="hamd-count">0</span>
-                    </button>
-                    <button onclick="incrementZikir('tehlil')" class="counter-btn w-full bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg p-3 flex items-center justify-between">
-                        <span class="text-sm font-medium">Tehlil</span>
-                        <span class="text-lg font-bold" id="tehlil-count">0</span>
-                    </button>
-                    <button onclick="incrementZikir('tesbih')" class="counter-btn w-full bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg p-3 flex items-center justify-between">
-                        <span class="text-sm font-medium">Tesbih</span>
-                        <span class="text-lg font-bold" id="tesbih-count">0</span>
-                    </button>
-                    <button onclick="incrementZikir('tekbir')" class="counter-btn w-full bg-violet-500 hover:bg-violet-600 text-white rounded-lg p-3 flex items-center justify-between">
-                        <span class="text-sm font-medium">Tekbir</span>
-                        <span class="text-lg font-bold" id="tekbir-count">0</span>
-                    </button>
-                    <button onclick="incrementZikir('lailaheillallah')" class="counter-btn w-full bg-rose-500 hover:bg-rose-600 text-white rounded-lg p-3 flex items-center justify-between">
-                        <span class="text-sm font-medium">Lâ ilâhe illallah</span>
-                        <span class="text-lg font-bold" id="lailaheillallah-count">0</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- 40.000 İhlas -->
-            <div class="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl p-4 shadow-lg text-white">
-                <h3 class="text-sm font-semibold mb-2">🌙 40.000 İhlas-ı Şerif</h3>
-                <div class="text-center my-4">
-                    <div class="text-4xl font-bold" id="ihlas-count">0</div>
-                    <div class="text-xs opacity-90 mt-1">/ 40.000</div>
-                    <div class="text-lg font-semibold mt-2" id="ihlas-percentage">0%</div>
-                </div>
-                <div class="bg-white/20 rounded-full h-2 overflow-hidden mb-3">
-                    <div id="ihlas-progress" class="bg-white h-full transition-all duration-500" style="width: 0%"></div>
-                </div>
-                <button onclick="incrementZikir('ihlas')" class="counter-btn w-full bg-white text-indigo-600 rounded-lg p-3 font-medium hover:bg-gray-100">
-                    İhlas-ı Şerif Çek
-                </button>
-                <button onclick="shareWhatsApp('ihlas')" class="w-full mt-2 bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg text-sm font-medium">
-                    📱 WhatsApp Paylaş
-                </button>
-            </div>
-
-            <!-- Custom Zikirler -->
-            <div id="customZikirler" class="space-y-2"></div>
-        </div>
-
-        <!-- Dualar Tab -->
-        <div id="dualar" class="tab-content hidden">
-            <div class="bg-white rounded-xl p-4 shadow-sm">
-                <h3 class="text-sm font-semibold text-gray-800 mb-3">Sabah - Akşam Duaları</h3>
-                <p class="text-sm text-gray-600">Dualar yakında eklenecektir...</p>
-            </div>
-        </div>
-
-        <!-- İstatistikler Tab -->
-        <div id="istatistikler" class="tab-content hidden space-y-3">
-            <div class="bg-white rounded-xl p-4 shadow-sm">
-                <div class="flex items-center justify-between mb-3">
-                    <h3 class="text-sm font-semibold text-gray-800">Zikir Dağılımı</h3>
-                    <button onclick="shareScreenshot()" class="px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white rounded-lg text-xs font-medium">
-                        📸 Paylaş
-                    </button>
-                </div>
-                <div class="flex justify-center">
-                    <canvas id="statsChart" width="250" height="250"></canvas>
-                </div>
-            </div>
-            
-            <div class="bg-white rounded-xl p-4 shadow-sm">
-                <h3 class="text-sm font-semibold text-gray-800 mb-3">Toplam İstatistikler</h3>
-                <div id="totalStats" class="space-y-2"></div>
-            </div>
-        </div>
-        
-    </main>
-
-    <!-- Sureler Modal -->
-    <div id="surelerModal" class="fixed inset-0 modal z-50 hidden" onclick="closeModal('surelerModal')">
-        <div class="modal-content bg-white rounded-t-3xl fixed bottom-0 left-0 right-0 max-h-[85vh] overflow-y-auto" onclick="event.stopPropagation()">
-            <div class="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between">
-                <h2 class="text-lg font-semibold text-gray-800">Sureler</h2>
-                <button onclick="closeModal('surelerModal')" class="p-2 hover:bg-gray-100 rounded-lg">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-            <div class="p-4 grid gap-3">
-                <div class="sure-card bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl p-4 shadow-md" onclick="showSure('ihlas')">
-                    <h3 class="font-semibold">İhlas Suresi</h3>
-                    <p class="text-xs opacity-90 mt-1">112. Sure - 4 Ayet</p>
-                </div>
-                <div class="sure-card bg-gradient-to-br from-green-500 to-green-600 text-white rounded-xl p-4 shadow-md" onclick="showSure('felak')">
-                    <h3 class="font-semibold">Felak Suresi</h3>
-                    <p class="text-xs opacity-90 mt-1">113. Sure - 5 Ayet</p>
-                </div>
-                <div class="sure-card bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-xl p-4 shadow-md" onclick="showSure('nas')">
-                    <h3 class="font-semibold">Nas Suresi</h3>
-                    <p class="text-xs opacity-90 mt-1">114. Sure - 6 Ayet</p>
-                </div>
-                <div class="sure-card bg-gradient-to-br from-orange-500 to-orange-600 text-white rounded-xl p-4 shadow-md" onclick="showSure('fatiha')">
-                    <h3 class="font-semibold">Fatiha Suresi</h3>
-                    <p class="text-xs opacity-90 mt-1">1. Sure - 7 Ayet</p>
-                </div>
-                <div class="sure-card bg-gradient-to-br from-pink-500 to-pink-600 text-white rounded-xl p-4 shadow-md" onclick="showSure('ayet')">
-                    <h3 class="font-semibold">Ayetel Kürsi</h3>
-                    <p class="text-xs opacity-90 mt-1">Bakara 255. Ayet</p>
-                </div>
-            </div>
-        </div>
+    <div class="menu" id="menu">
+        <div class="menu-header">Menü</div>
+        <div class="menu-item" onclick="showSection('gelir-gider')">Gelir Gider Takibi</div>
+        <div class="menu-item" onclick="showSection('harca')">Harca Mali Takibi</div>
+        <div class="menu-item" onclick="showSection('izin')">İzin Günleri Hesaplama</div>
+        <div class="menu-item" onclick="showSection('zikirmatik')">Zikirmatik</div>
     </div>
 
-    <!-- Sure Detail Modal -->
-    <div id="sureDetailModal" class="fixed inset-0 modal z-50 hidden" onclick="closeModal('sureDetailModal')">
-        <div class="modal-content bg-white rounded-t-3xl fixed bottom-0 left-0 right-0 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
-            <div class="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between">
-                <h2 id="sureTitle" class="text-lg font-semibold text-gray-800"></h2>
-                <button onclick="closeModal('sureDetailModal')" class="p-2 hover:bg-gray-100 rounded-lg">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-            <div id="sureContent" class="p-4 space-y-4"></div>
-        </div>
-    </div>
+    <div class="notification" id="notification"></div>
 
-    <!-- Add Zikir Modal -->
-    <div id="addZikirModal" class="fixed inset-0 modal z-50 hidden" onclick="closeModal('addZikirModal')">
-        <div class="modal-content bg-white rounded-t-3xl fixed bottom-0 left-0 right-0" onclick="event.stopPropagation()">
-            <div class="p-4 border-b border-gray-200">
-                <h2 class="text-lg font-semibold text-gray-800">Zikir Ekle</h2>
+    <div class="container">
+        <!-- GELİR GİDER TAKİBİ -->
+        <div class="section active" id="gelir-gider">
+            <div class="card">
+                <h2 class="card-title">Gelir Gider Takibi</h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-card income">
+                        <div class="stat-label">Toplam Gelir</div>
+                        <div class="stat-value" id="totalIncome">0₺</div>
+                    </div>
+                    <div class="stat-card expense">
+                        <div class="stat-label">Toplam Gider</div>
+                        <div class="stat-value" id="totalExpense">0₺</div>
+                    </div>
+                    <div class="stat-card net">
+                        <div class="stat-label">Net Kazanç</div>
+                        <div class="stat-value" id="netIncome">0₺</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="pieChart"></canvas>
+                </div>
+
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="switchTab('gunluk')">Günlük</button>
+                    <button class="tab-btn" onclick="switchTab('haftalik')">Haftalık</button>
+                    <button class="tab-btn" onclick="switchTab('aylik')">Aylık</button>
+                </div>
+
+                <div class="input-group">
+                    <label>Açıklama</label>
+                    <input type="text" id="transactionDesc" placeholder="Örn: Kahve satışı">
+                </div>
+
+                <div class="input-group">
+                    <label>Tutar (₺)</label>
+                    <input type="number" id="transactionAmount" placeholder="0">
+                </div>
+
+                <div class="input-group">
+                    <label>Tarih</label>
+                    <input type="date" id="transactionDate">
+                </div>
+
+                <div class="input-group">
+                    <label>Tür</label>
+                    <select id="transactionType">
+                        <option value="income">Gelir</option>
+                        <option value="expense">Gider</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-success" onclick="addTransaction()">Kaydet</button>
+
+                <div class="transaction-list" id="transactionList"></div>
             </div>
-            <div class="p-4 space-y-3">
-                <input type="text" id="newZikirName" placeholder="Zikir adı" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
-                <select id="newZikirColor" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
-                    <option value="#3b82f6">Mavi</option>
-                    <option value="#10b981">Yeşil</option>
-                    <option value="#f59e0b">Turuncu</option>
-                    <option value="#ef4444">Kırmızı</option>
-                    <option value="#8b5cf6">Mor</option>
-                    <option value="#06b6d4">Cyan</option>
-                </select>
-                <button onclick="addCustomZikir()" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg text-sm font-medium">
-                    Ekle
-                </button>
+        </div>
+
+        <!-- HARCA MALİ TAKİBİ -->
+        <div class="section" id="harca">
+            <div class="card">
+                <h2 class="card-title">Harca Mali Takibi</h2>
+
+                <div class="stats-grid">
+                    <div class="stat-card expense">
+                        <div class="stat-label">Toplam Harcama</div>
+                        <div class="stat-value" id="totalSpending">0₺</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Aylık Harcama</div>
+                        <div class="stat-value" id="monthlySpending">0₺</div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Harcama Açıklaması</label>
+                    <input type="text" id="spendingDesc" placeholder="Örn: Market alışverişi">
+                </div>
+
+                <div class="input-group">
+                    <label>Tutar (₺)</label>
+                    <input type="number" id="spendingAmount" placeholder="0">
+                </div>
+
+                <div class="input-group">
+                    <label>Tarih</label>
+                    <input type="date" id="spendingDate">
+                </div>
+
+                <button class="btn btn-success" onclick="addSpending()">Harcama Ekle</button>
+
+                <div class="transaction-list" id="spendingList"></div>
+            </div>
+        </div>
+
+        <!-- İZİN GÜNLERİ HESAPLAMA -->
+        <div class="section" id="izin">
+            <div class="card">
+                <h2 class="card-title">İzin Günleri Hesaplama</h2>
+
+                <div class="input-group">
+                    <label>Haftalık Ortalama Kazanç (₺)</label>
+                    <input type="number" id="weeklyIncome" placeholder="0">
+                </div>
+
+                <div class="input-group">
+                    <label>İzin Günü Seç</label>
+                    <select id="dayOff">
+                        <option value="1">Pazartesi</option>
+                        <option value="2">Salı</option>
+                        <option value="3">Çarşamba</option>
+                        <option value="4">Perşembe</option>
+                        <option value="5">Cuma</option>
+                        <option value="6">Cumartesi</option>
+                        <option value="0">Pazar</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary" onclick="calculateDayOff()">Hesapla</button>
+
+                <div class="stats-grid" style="margin-top: 2rem;">
+                    <div class="stat-card expense">
+                        <div class="stat-label">Günlük Kayıp</div>
+                        <div class="stat-value" id="dailyLoss">0₺</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Yeni Haftalık Kazanç</div>
+                        <div class="stat-value" id="newWeeklyIncome">0₺</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ZİKİRMATİK -->
+        <div class="section" id="zikirmatik">
+            <div class="card">
+                <h2 class="card-title">Zikirmatik Ana Panel</h2>
+                <div class="zikir-container">
+                    <button class="zikir-button" onclick="incrementMainZikir()" id="mainZikirBtn">0</button>
+                    <div class="zikir-info">Zikir sayısı</div>
+                    <button class="btn btn-danger" style="margin-top: 1rem;" onclick="resetMainZikir()">Sıfırla</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Namaz Sonrası Tesbihat</h2>
+                <div class="zikir-grid">
+                    <div class="zikir-card">
+                        <div class="zikir-card-title">Subhanallah</div>
+                        <div class="zikir-count" id="subhan-count">0/33</div>
+                        <button class="zikir-card-btn" onclick="incrementTesbih('subhan')">+</button>
+                    </div>
+                    <div class="zikir-card">
+                        <div class="zikir-card-title">Elhamdülillah</div>
+                        <div class="zikir-count" id="elhamd-count">0/33</div>
+                        <button class="zikir-card-btn" onclick="incrementTesbih('elhamd')">+</button>
+                    </div>
+                    <div class="zikir-card">
+                        <div class="zikir-card-title">Allahu Ekber</div>
+                        <div class="zikir-count" id="tekbir-count">0/34</div>
+                        <button class="zikir-card-btn" onclick="incrementTesbih('tekbir')">+</button>
+                    </div>
+                </div>
+                <button class="btn btn-danger" style="margin-top: 1rem;" onclick="resetTesbih()">Tümünü Sıfırla</button>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">33+33+33 Zikir Paneli</h2>
+                <div class="zikir-grid">
+                    <div class="zikir-card">
+                        <div class="zikir-card-title">Estağfirullah</div>
+                        <div class="zikir-count" id="estagfir-count">0/33</div>
+                        <button class="zikir-card-btn" onclick="incrementZikir33('estagfir')">+</button>
+                    </div>
+                    <div class="zikir-card">
+                        <div class="zikir-card-title">Allahümme Salli</div>
+                        <div class="zikir-count" id="salli-count">0/33</div>
+                        <button class="zikir-card-btn" onclick="incrementZikir33('salli')">+</button>
+                    </div>
+                    <div class="zikir-card">
+                        <div class="zikir-card-title">La ilahe illallah</div>
+                        <div class="zikir-count" id="kelime-count">0/33</div>
+                        <button class="zikir-card-btn" onclick="incrementZikir33('kelime')">+</button>
+                    </div>
+                </div>
+                <button class="btn btn-danger" style="margin-top: 1rem;" onclick="resetZikir33()">Tümünü Sıfırla</button>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">40.000 İhlas Sayacı</h2>
+                <div class="zikir-container">
+                    <div class="zikir-count" style="font-size: 3rem;" id="ihlas-count">0</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="ihlas-progress" style="width: 0%;">0%</div>
+                    </div>
+                    <button class="zikir-button" onclick="incrementIhlas()" style="margin-top: 2rem;">+1</button>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        const zikirData = {
-            subhanallah: { count: 0, color: '#3b82f6', target: 33, name: 'Subhanallah', desc: 'Allah\'ı tüm eksikliklerden tenzih etme. Namaz sonrası 33 kez çekilir.' },
-            elhamdulillah: { count: 0, color: '#10b981', target: 33, name: 'Elhamdulillah', desc: 'Allah\'a hamd etme, şükretme. Namaz sonrası 33 kez çekilir.' },
-            allahuekber: { count: 0, color: '#9333ea', target: 33, name: 'Allahuekber', desc: 'Allah\'ın en büyük olduğunu kabul etme. Namaz sonrası 33 kez çekilir.' },
-            tevhid: { count: 0, color: '#f97316', name: 'Kelime-i Tevhid', desc: 'Lâ ilâhe illallâh - Allah\'tan başka ilah olmadığını ikrar etme.' },
-            salavat: { count: 0, color: '#ec4899', name: 'Salavat-ı Şerife', desc: 'Hz. Muhammed\'e salat ve selam getirme. Manevi bereketler kazandırır.' },
-            istigfar: { count: 0, color: '#14b8a6', name: 'İstiğfar', desc: 'Estağfirullah - Allah\'tan bağışlanma dileme. Günah ve hatalardan arınma.' },
-            hamd: { count: 0, color: '#6366f1', name: 'Hamd', desc: 'Elhamdülillah - Her durumda Allah\'a şükretme.' },
-            tehlil: { count: 0, color: '#06b6d4', name: 'Tehlil', desc: 'Lâ ilâhe illallâh - Tevhid kelimesi, imanın özü.' },
-            tesbih: { count: 0, color: '#10b981', name: 'Tesbih', desc: 'Sübhânallah - Allah\'ı noksan sıfatlardan tenzih etme.' },
-            tekbir: { count: 0, color: '#8b5cf6', name: 'Tekbir', desc: 'Allahu Ekber - Allah\'ın büyüklüğünü ikrar etme.' },
-            lailaheillallah: { count: 0, color: '#f43f5e', name: 'Lâ ilâhe illallah', desc: 'Kelime-i tevhid, en faziletli zikir. İmanın kalbi.' },
-            ihlas: { count: 0, target: 40000, color: '#4f46e5', name: '40.000 İhlas', desc: 'İhlas Suresi\'ni 40.000 kez okuma. Büyük sevap kazandırır.' }
-        };
-
-        const sureData = {
-            ihlas: {
-                title: 'İhlas Suresi',
-                arabic: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ<br>قُلْ هُوَ اللَّهُ أَحَدٌ ۝ اللَّهُ الصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ',
-                turkish: 'Bismillâhirrahmânirrahîm. Kul hüvallâhü ehad. Allâhüs-samed. Lem yelid ve lem yûled. Ve lem yekün lehû küfüven ehad.',
-                meaning: 'Rahman ve Rahim olan Allah\'ın adıyla. De ki: O, Allah bir tektir. Allah Samed\'dir. O, doğurmamış ve doğurulmamıştır. Hiçbir şey O\'na denk değildir.',
-                benefit: 'Tevhid inancını pekiştirir. Kuran\'ın üçte birine denktir. Sabah-akşam okunması tavsiye edilir.'
-            },
-            felak: {
-                title: 'Felak Suresi',
-                arabic: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ<br>قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ۝ مِنْ شَرِّ مَا خَلَقَ ۝ وَمِنْ شَرِّ غَاسِقٍ إِذَا وَقَبَ ۝ وَمِنْ شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ۝ وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ',
-                turkish: 'Bismillâhirrahmânirrahîm. Kul eûzü birabbil-felak. Min şerri mâ halak. Ve min şerri ğâsıkın izâ vekab. Ve min şerrin-neffâsâti fil-ukad. Ve min şerri hâsidin izâ hased.',
-                meaning: 'Rahman ve Rahim olan Allah\'ın adıyla. De ki: Yarattıklarının şerrinden, gecenin şerrinden, büyücülerin şerrinden ve hasetçinin şerrinden sabahın Rabbine sığınırım.',
-                benefit: 'Kötülüklerden, sihir ve nazardan korunmak için okunur. Muavvizeteyn\'den biridir.'
-            },
-            nas: {
-                title: 'Nas Suresi',
-                arabic: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ<br>قُلْ أَعُوذُ بِرَبِّ النَّاسِ ۝ مَلِكِ النَّاسِ ۝ إِلَٰهِ النَّاسِ ۝ مِنْ شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ۝ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ ۝ مِنَ الْجِنَّةِ وَالنَّاسِ',
-                turkish: 'Bismillâhirrahmânirrahîm. Kul eûzü birabbin-nâs. Melikin-nâs. İlâhin-nâs. Min şerril-vesvâsil-hannâs. Ellezî yuvesvisu fî sudûrin-nâs. Minel-cinneti ven-nâs.',
-                meaning: 'Rahman ve Rahim olan Allah\'ın adıyla. De ki: İnsanların Rabbine, insanların Malik\'ine, insanların İlâh\'ına sığınırım. O sinsi vesvesecinin şerrinden; ki o, insanların göğüslerine vesvese sokar.',
-                benefit: 'Şeytan ve kötü düşüncelerden korunmak için okunur. Muavvizeteyn\'den biridir.'
-            },
-            fatiha: {
-                title: 'Fatiha Suresi',
-                arabic: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ<br>الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ۝ الرَّحْمَٰنِ الرَّحِيمِ ۝ مَالِكِ يَوْمِ الدِّينِ ۝ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ۝ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ ۝ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ',
-                turkish: 'Bismillâhirrahmânirrahîm. Elhamdü lillâhi rabbil âlemîn. Errahmânirrahîm. Mâliki yevmiddîn. İyyâke na\'büdü ve iyyâke nesteîn. İhdinâs sırâtal müstekîm. Sırâtallezîne en\'amte aleyhim ğayril mağdûbi aleyhim veleddâllîn.',
-                meaning: 'Hamd, âlemlerin Rabbi Allah\'a mahsustur. O, Rahman ve Rahim\'dir. Din gününün (ceza ve mükafat gününün) sahibidir. Yalnız sana ibadet eder ve yalnız senden yardım dileriz. Bizi doğru yola, kendilerine nimet verdiklerinin yoluna ilet; gazaba uğrayanların ve sapıkların yoluna değil.',
-                benefit: 'Kuran\'ın anası, namazın rüknü. Her namazda okunur. Dua ve şifa için büyük fazilete sahiptir.'
-            },
-            ayet: {
-                title: 'Ayetel Kürsi',
-                arabic: 'اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ',
-                turkish: 'Allahü lâ ilâhe illâ hüvel hayyül kayyûm. Lâ te\'huzühû sinetün velâ nevm. Lehû mâ fîs semâvâti ve mâ fîl ard. Men zellezî yeşfeü \'indehû illâ biiznih. Ya\'lemü mâ beyne eydîhim ve mâ halfehüm. Ve lâ yühîtûne bişey\'in min \'ilmihî illâ bimâ şâe. Vesia kürsiyyühüs semâvâti vel ard. Ve lâ yeûdühû hıfzuhümâ. Ve hüvel aliyyül azîm.',
-                meaning: 'Allah, O\'ndan başka ilah yoktur. Diridir, Kayyumdur. Onu ne uyuklama tutar ne de uyku. Göklerde ve yerde ne varsa hepsi O\'nundur. İzni olmadan katında şefaat edecek kimdir? O, kullarının önlerindeki ve arkalarındaki her şeyi bilir. Onlar, O\'nun ilminden, ancak O\'nun dilediği kadarını kavrayabilirler. O\'nun kürsüsü gökleri ve yeri içine alır. Onları koruyup gözetmek O\'na güç gelmez. O, yücedir, büyüktür.',
-                benefit: 'Kuran\'ın en faziletli ayeti. Sabah-akşam ve her namazdan sonra okunması tavsiye edilir. Koruma ve bereket sağlar.'
-            }
-        };
-
-        let chart = null;
-        let customZikirler = {};
-
-        function loadData() {
-            const saved = localStorage.getItem('duhaZikirData');
-            if (saved) {
-                const data = JSON.parse(saved);
-                Object.keys(data).forEach(key => {
-                    if (zikirData[key]) {
-                        zikirData[key].count = data[key].count || 0;
-                    }
-                });
-            }
-            
-            const customSaved = localStorage.getItem('duhaCustomZikirler');
-            if (customSaved) {
-                customZikirler = JSON.parse(customSaved);
-                renderCustomZikirler();
-            }
-            
-            updateAllDisplays();
+        // LocalStorage yardımcı fonksiyonlar
+        function saveData(key, value) {
+            localStorage.setItem(key, JSON.stringify(value));
         }
 
-        function saveData() {
-            const dataToSave = {};
-            Object.keys(zikirData).forEach(key => {
-                dataToSave[key] = { count: zikirData[key].count };
-            });
-            localStorage.setItem('duhaZikirData', JSON.stringify(dataToSave));
-            localStorage.setItem('duhaCustomZikirler', JSON.stringify(customZikirler));
+        function loadData(key, defaultValue = []) {
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : defaultValue;
         }
 
-        function incrementZikir(type) {
-            if (zikirData[type]) {
-                zikirData[type].count++;
-            } else if (customZikirler[type]) {
-                customZikirler[type].count++;
-            }
-            
-            if (navigator.vibrate) {
-                navigator.vibrate(10);
-            }
-            
-            playClickSound();
-            updateDisplay(type);
-            saveData();
-            
-            if (zikirData[type]?.target && zikirData[type].count === zikirData[type].target) {
-                setTimeout(() => alert(`🎉 Tebrikler! ${zikirData[type].name} hedefini tamamladınız!`), 100);
-            }
-        }
-
-        function updateDisplay(type) {
-            const countEl = document.getElementById(`${type}-count`);
-            if (countEl) {
-                const count = zikirData[type]?.count || customZikirler[type]?.count || 0;
-                countEl.textContent = count.toLocaleString('tr-TR');
-            }
-            
-            if (type === 'ihlas') {
-                const progressEl = document.getElementById('ihlas-progress');
-                const percentageEl = document.getElementById('ihlas-percentage');
-                const percentage = (zikirData.ihlas.count / 40000) * 100;
-                progressEl.style.width = Math.min(percentage, 100) + '%';
-                percentageEl.textContent = Math.min(percentage, 100).toFixed(1) + '%';
-            }
-        }
-
-        function updateAllDisplays() {
-            Object.keys(zikirData).forEach(type => updateDisplay(type));
-            Object.keys(customZikirler).forEach(type => updateDisplay(type));
-            updateChart();
-            updateTotalStats();
-        }
-
-        function playClickSound() {
-            const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZURE=');
-            audio.volume = 0.1;
-            audio.play().catch(() => {});
-        }
-
+        // Menü toggle
         function toggleMenu() {
-            document.getElementById('menuOverlay').classList.toggle('hidden');
+            const menu = document.getElementById('menu');
+            const overlay = document.getElementById('overlay');
+            menu.classList.toggle('active');
+            overlay.classList.toggle('active');
         }
 
-        function showTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
-            const targetTab = document.getElementById(tabName);
-            if (targetTab) {
-                targetTab.classList.remove('hidden');
-                targetTab.classList.add('fade-in');
-            }
+        // Bölüm gösterme
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
             toggleMenu();
             
-            if (tabName === 'istatistikler') {
-                setTimeout(() => {
-                    updateChart();
-                    updateTotalStats();
-                }, 100);
+            if (sectionId === 'gelir-gider') {
+                updateTransactionStats();
+                renderTransactions();
+                drawPieChart();
+            } else if (sectionId === 'harca') {
+                updateSpendingStats();
+                renderSpending();
             }
         }
 
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
-            localStorage.setItem('duhaDarkMode', isDark);
+        // Bildirim gösterme
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // GELİR GİDER TAKİBİ
+        let transactions = loadData('transactions', []);
+        let currentTab = 'gunluk';
+
+        document.getElementById('transactionDate').valueAsDate = new Date();
+
+        function switchTab(tab) {
+            currentTab = tab;
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            updateTransactionStats();
+            renderTransactions();
+            drawPieChart();
+        }
+
+        function addTransaction() {
+            const desc = document.getElementById('transactionDesc').value;
+            const amount = parseFloat(document.getElementById('transactionAmount').value);
+            const date = document.getElementById('transactionDate').value;
+            const type = document.getElementById('transactionType').value;
+
+            if (!desc || !amount || !date) {
+                showNotification('Lütfen tüm alanları doldurun!');
+                return;
+            }
+
+            transactions.push({
+                id: Date.now(),
+                desc,
+                amount,
+                date,
+                type
+            });
+
+            saveData('transactions', transactions);
+            updateTransactionStats();
+            renderTransactions();
+            drawPieChart();
+
+            document.getElementById('transactionDesc').value = '';
+            document.getElementById('transactionAmount').value = '';
+            showNotification('İşlem eklendi!');
+        }
+
+        function deleteTransaction(id) {
+            transactions = transactions.filter(t => t.id !== id);
+            saveData('transactions', transactions);
+            updateTransactionStats();
+            renderTransactions();
+            drawPieChart();
+            showNotification('İşlem silindi!');
+        }
+
+        function getFilteredTransactions() {
+            const now = new Date();
+            const today = now.toISOString().split('T')[0];
             
-            const icon = document.getElementById('darkModeIcon');
-            if (isDark) {
-                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>';
-            } else {
-                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>';
-            }
+            return transactions.filter(t => {
+                const tDate = new Date(t.date);
+                
+                if (currentTab === 'gunluk') {
+                    return t.date === today;
+                } else if (currentTab === 'haftalik') {
+                    const weekAgo = new Date(now);
+                    weekAgo.setDate(weekAgo.getDate() - 7);
+                    return tDate >= weekAgo;
+                } else if (currentTab === 'aylik') {
+                    const monthAgo = new Date(now);
+                    monthAgo.setMonth(monthAgo.getMonth() - 1);
+                    return tDate >= monthAgo;
+                }
+                return true;
+            });
         }
 
-        function showModal(modalId) {
-            document.getElementById(modalId).classList.remove('hidden');
-            if (modalId === 'surelerModal') {
-                toggleMenu();
-            }
+        function updateTransactionStats() {
+            const filtered = getFilteredTransactions();
+            const income = filtered.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+            const expense = filtered.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+            const net = income - expense;
+
+            document.getElementById('totalIncome').textContent = income.toFixed(2) + '₺';
+            document.getElementById('totalExpense').textContent = expense.toFixed(2) + '₺';
+            document.getElementById('netIncome').textContent = net.toFixed(2) + '₺';
         }
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.add('hidden');
-        }
-
-        function showSure(sureKey) {
-            const sure = sureData[sureKey];
-            if (!sure) return;
+        function renderTransactions() {
+            const filtered = getFilteredTransactions();
+            const list = document.getElementById('transactionList');
             
-            document.getElementById('sureTitle').textContent = sure.title;
-            document.getElementById('sureContent').innerHTML = `
-                <div class="space-y-4">
-                    <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-4">
-                        <p class="text-xs text-gray-600 mb-2">Arapça</p>
-                        <p class="text-xl text-right leading-loose">${sure.arabic}</p>
+            if (filtered.length === 0) {
+                list.innerHTML = '<div style="text-align: center; padding: 2rem; color: #999;">Henüz işlem yok</div>';
+                return;
+            }
+
+            list.innerHTML = filtered.sort((a, b) => new Date(b.date) - new Date(a.date)).map(t => `
+                <div class="transaction-item">
+                    <div class="transaction-info">
+                        <div style="font-weight: 600; margin-bottom: 0.25rem;">${t.desc}</div>
+                        <div style="font-size: 0.85rem; color: #666;">${t.date}</div>
                     </div>
-                    <div class="bg-blue-50 rounded-xl p-4">
-                        <p class="text-xs text-gray-600 mb-2">Türkçe Okunuş</p>
-                        <p class="text-sm text-gray-800">${sure.turkish}</p>
-                    </div>
-                    <div class="bg-green-50 rounded-xl p-4">
-                        <p class="text-xs text-gray-600 mb-2">Anlamı</p>
-                        <p class="text-sm text-gray-800">${sure.meaning}</p>
-                    </div>
-                    <div class="bg-amber-50 rounded-xl p-4">
-                        <p class="text-xs text-gray-600 mb-2">Faydası</p>
-                        <p class="text-sm text-gray-800">${sure.benefit}</p>
-                    </div>
+                    <div class="transaction-amount ${t.type}">${t.type === 'income' ? '+' : '-'}${t.amount.toFixed(2)}₺</div>
+                    <button class="btn btn-danger btn-small" onclick="deleteTransaction(${t.id})">Sil</button>
                 </div>
-            `;
-            
-            closeModal('surelerModal');
-            showModal('sureDetailModal');
+            `).join('');
         }
 
-        function updateChart() {
-            const ctx = document.getElementById('statsChart');
-            if (!ctx) return;
-            
-            if (chart) chart.destroy();
-            
-            const labels = [];
-            const data = [];
-            const colors = [];
-            
-            Object.entries(zikirData).forEach(([key, value]) => {
-                if (value.count > 0) {
-                    labels.push(value.name);
-                    data.push(value.count);
-                    colors.push(value.color);
-                }
-            });
-            
-            Object.entries(customZikirler).forEach(([key, value]) => {
-                if (value.count > 0) {
-                    labels.push(value.name);
-                    data.push(value.count);
-                    colors.push(value.color);
-                }
-            });
-            
-            chart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: colors,
-                        borderWidth: 2,
-                        borderColor: '#fff'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                boxWidth: 12,
-                                padding: 10,
-                                font: { size: 11 }
-                            }
-                        }
-                    }
-                }
-            });
-        }
+        function drawPieChart() {
+            const filtered = getFilteredTransactions();
+            const income = filtered.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+            const expense = filtered.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+            const remaining = income - expense;
 
-        function updateTotalStats() {
-            const container = document.getElementById('totalStats');
-            if (!container) return;
-            
-            let html = '';
-            
-            Object.entries(zikirData).forEach(([key, data]) => {
-                if (data.count > 0) {
-                    html += `
-                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
-                            <div class="flex items-center gap-2">
-                                <div class="w-3 h-3 rounded-full" style="background: ${data.color}"></div>
-                                <span class="text-sm text-gray-700">${data.name}</span>
-                            </div>
-                            <span class="text-sm font-semibold" style="color: ${data.color}">${data.count.toLocaleString('tr-TR')}</span>
-                        </div>
-                    `;
-                }
-            });
-            
-            Object.entries(customZikirler).forEach(([key, data]) => {
-                if (data.count > 0) {
-                    html += `
-                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
-                            <div class="flex items-center gap-2">
-                                <div class="w-3 h-3 rounded-full" style="background: ${data.color}"></div>
-                                <span class="text-sm text-gray-700">${data.name}</span>
-                            </div>
-                            <span class="text-sm font-semibold" style="color: ${data.color}">${data.count.toLocaleString('tr-TR')}</span>
-                        </div>
-                    `;
-                }
-            });
-            
-            container.innerHTML = html || '<p class="text-sm text-gray-500 text-center py-4">Henüz zikir çekmediniz</p>';
-        }
+            const canvas = document.getElementById('pieChart');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 300;
+            canvas.height = 300;
 
-        function shareWhatsApp(type) {
-            const count = zikirData[type].count;
-            const percentage = ((count / 40000) * 100).toFixed(1);
-            const message = `🌙 Duha Zikirmatik ile ${count.toLocaleString('tr-TR')} İhlas-ı Şerif çektim!\n\nHedefimin %${percentage}'ine ulaştım! 🎯\n\nSen de katıl: https://yourapp.com`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
-        }
-
-        async function shareScreenshot() {
-            const element = document.getElementById('istatistikler');
-            try {
-                const canvas = await html2canvas(element, { backgroundColor: '#ffffff', scale: 2 });
-                canvas.toBlob(blob => {
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'duha-istatistikler.png';
-                    a.click();
-                    URL.revokeObjectURL(url);
-                    alert('📸 Ekran görüntüsü indirildi!');
-                });
-            } catch (error) {
-                alert('Hata oluştu.');
-            }
-        }
-
-        function addCustomZikir() {
-            const name = document.getElementById('newZikirName').value.trim();
-            const color = document.getElementById('newZikirColor').value;
-            
-            if (!name) {
-                alert('Lütfen zikir adı girin');
+            const total = income + expense;
+            if (total === 0) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#999';
+                ctx.font = '16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Veri yok', canvas.width / 2, canvas.height / 2);
                 return;
             }
-            
-            const key = 'custom_' + Date.now();
-            customZikirler[key] = { name, color, count: 0 };
-            saveData();
-            renderCustomZikirler();
-            closeModal('addZikirModal');
-            document.getElementById('newZikirName').value = '';
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 100;
+
+            let currentAngle = -Math.PI / 2;
+
+            const data = [
+                { label: 'Gelir', value: income, color: '#27ae60' },
+                { label: 'Gider', value: expense, color: '#e74c3c' }
+            ];
+
+            data.forEach(item => {
+                const sliceAngle = (item.value / total) * 2 * Math.PI;
+                
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + sliceAngle);
+                ctx.lineTo(centerX, centerY);
+                ctx.fillStyle = item.color;
+                ctx.fill();
+                
+                const textAngle = currentAngle + sliceAngle / 2;
+                const textX = centerX + Math.cos(textAngle) * (radius * 0.7);
+                const textY = centerY + Math.sin(textAngle) * (radius * 0.7);
+                
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(item.label, textX, textY - 10);
+                ctx.fillText(item.value.toFixed(0) + '₺', textX, textY + 10);
+                
+                currentAngle += sliceAngle;
+            });
         }
 
-        function renderCustomZikirler() {
-            const container = document.getElementById('customZikirler');
-            if (Object.keys(customZikirler).length === 0) {
-                container.innerHTML = '';
+        // HARCA MALİ TAKİBİ
+        let spendings = loadData('spendings', []);
+
+        document.getElementById('spendingDate').valueAsDate = new Date();
+
+        function addSpending() {
+            const desc = document.getElementById('spendingDesc').value;
+            const amount = parseFloat(document.getElementById('spendingAmount').value);
+            const date = document.getElementById('spendingDate').value;
+
+            if (!desc || !amount || !date) {
+                showNotification('Lütfen tüm alanları doldurun!');
                 return;
             }
-            
-            let html = '<div class="bg-white rounded-xl p-4 shadow-sm"><h3 class="text-sm font-semibold text-gray-800 mb-3">Özel Zikirlerim</h3><div class="space-y-2">';
-            
-            Object.entries(customZikirler).forEach(([key, data]) => {
-                html += `
-                    <button onclick="incrementZikir('${key}')" class="counter-btn w-full text-white rounded-lg p-3 flex items-center justify-between" style="background: ${data.color}">
-                        <span class="text-sm font-medium">${data.name}</span>
-                        <span class="text-lg font-bold" id="${key}-count">${data.count}</span>
-                    </button>
-                `;
+
+            spendings.push({
+                id: Date.now(),
+                desc,
+                amount,
+                date
             });
+
+            saveData('spendings', spendings);
+            updateSpendingStats();
+            renderSpending();
+
+            document.getElementById('spendingDesc').value = '';
+            document.getElementById('spendingAmount').value = '';
+            showNotification('Harcama eklendi!');
+        }
+
+        function deleteSpending(id) {
+            spendings = spendings.filter(s => s.id !== id);
+            saveData('spendings', spendings);
+            updateSpendingStats();
+            renderSpending();
+            showNotification('Harcama silindi!');
+        }
+
+        function updateSpendingStats() {
+            const total = spendings.reduce((sum, s) => sum + s.amount, 0);
             
-            html += '</div></div>';
-            container.innerHTML = html;
+            const now = new Date();
+            const monthAgo = new Date(now);
+            monthAgo.setMonth(monthAgo.getMonth() - 1);
+            
+            const monthly = spendings.filter(s => new Date(s.date) >= monthAgo)
+                .reduce((sum, s) => sum + s.amount, 0);
+
+            document.getElementById('totalSpending').textContent = total.toFixed(2) + '₺';
+            document.getElementById('monthlySpending').textContent = monthly.toFixed(2) + '₺';
         }
 
-        function resetAllData() {
-            if (confirm('TÜM verileri silmek istediğinizden emin misiniz?')) {
-                Object.keys(zikirData).forEach(key => zikirData[key].count = 0);
-                customZikirler = {};
-                saveData();
-                updateAllDisplays();
-                renderCustomZikirler();
-                alert('✅ Tüm veriler sıfırlandı.');
-                toggleMenu();
+        function renderSpending() {
+            const list = document.getElementById('spendingList');
+            
+            if (spendings.length === 0) {
+                list.innerHTML = '<div style="text-align: center; padding: 2rem; color: #999;">Henüz harcama yok</div>';
+                return;
+            }
+
+            list.innerHTML = spendings.sort((a, b) => new Date(b.date) - new Date(a.date)).map(s => `
+                <div class="transaction-item">
+                    <div class="transaction-info">
+                        <div style="font-weight: 600; margin-bottom: 0.25rem;">${s.desc}</div>
+                        <div style="font-size: 0.85rem; color: #666;">${s.date}</div>
+                    </div>
+                    <div class="transaction-amount expense">-${s.amount.toFixed(2)}₺</div>
+                    <button class="btn btn-danger btn-small" onclick="deleteSpending(${s.id})">Sil</button>
+                </div>
+            `).join('');
+        }
+
+        // İZİN GÜNLERİ HESAPLAMA
+        function calculateDayOff() {
+            const weeklyIncome = parseFloat(document.getElementById('weeklyIncome').value);
+            
+            if (!weeklyIncome || weeklyIncome <= 0) {
+                showNotification('Lütfen geçerli bir haftalık kazanç girin!');
+                return;
+            }
+
+            const dailyLoss = weeklyIncome / 7;
+            const newWeeklyIncome = weeklyIncome - dailyLoss;
+
+            document.getElementById('dailyLoss').textContent = dailyLoss.toFixed(2) + '₺';
+            document.getElementById('newWeeklyIncome').textContent = newWeeklyIncome.toFixed(2) + '₺';
+        }
+
+        // ZİKİRMATİK
+        let mainZikir = loadData('mainZikir', 0);
+        let tesbih = loadData('tesbih', { subhan: 0, elhamd: 0, tekbir: 0 });
+        let zikir33 = loadData('zikir33', { estagfir: 0, salli: 0, kelime: 0 });
+        let ihlasCount = loadData('ihlasCount', 0);
+
+        function updateMainZikir() {
+            document.getElementById('mainZikirBtn').textContent = mainZikir;
+        }
+
+        function incrementMainZikir() {
+            mainZikir++;
+            saveData('mainZikir', mainZikir);
+            updateMainZikir();
+        }
+
+        function resetMainZikir() {
+            if (confirm('Ana zikir sayacını sıfırlamak istediğinizden emin misiniz?')) {
+                mainZikir = 0;
+                saveData('mainZikir', mainZikir);
+                updateMainZikir();
+                showNotification('Ana zikir sıfırlandı!');
             }
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            loadData();
-            if (localStorage.getItem('duhaDarkMode') === 'true') {
-                document.body.classList.add('dark-mode');
-                document.getElementById('darkModeIcon').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>';
+        function updateTesbih() {
+            document.getElementById('subhan-count').textContent = `${tesbih.subhan}/33`;
+            document.getElementById('elhamd-count').textContent = `${tesbih.elhamd}/33`;
+            document.getElementById('tekbir-count').textContent = `${tesbih.tekbir}/34`;
+        }
+
+        function incrementTesbih(type) {
+            const limits = { subhan: 33, elhamd: 33, tekbir: 34 };
+            
+            if (tesbih[type] < limits[type]) {
+                tesbih[type]++;
+                saveData('tesbih', tesbih);
+                updateTesbih();
+                
+                if (tesbih[type] === limits[type]) {
+                    showNotification(`${type.toUpperCase()} tamamlandı!`);
+                }
+                
+                if (tesbih.subhan === 33 && tesbih.elhamd === 33 && tesbih.tekbir === 34) {
+                    showNotification('Tüm tesbihatlar tamamlandı!');
+                }
             }
-        });
+        }
+
+        function resetTesbih() {
+            if (confirm('Tüm tesbihatları sıfırlamak istediğinizden emin misiniz?')) {
+                tesbih = { subhan: 0, elhamd: 0, tekbir: 0 };
+                saveData('tesbih', tesbih);
+                updateTesbih();
+                showNotification('Tesbihatlar sıfırlandı!');
+            }
+        }
+
+        function updateZikir33() {
+            document.getElementById('estagfir-count').textContent = `${zikir33.estagfir}/33`;
+            document.getElementById('salli-count').textContent = `${zikir33.salli}/33`;
+            document.getElementById('kelime-count').textContent = `${zikir33.kelime}/33`;
+        }
+
+        function incrementZikir33(type) {
+            if (zikir33[type] < 33) {
+                zikir33[type]++;
+                saveData('zikir33', zikir33);
+                updateZikir33();
+                
+                if (zikir33[type] === 33) {
+                    showNotification(`${type.toUpperCase()} tamamlandı!`);
+                }
+            }
+        }
+
+        function resetZikir33() {
+            if (confirm('Tüm zikirleri sıfırlamak istediğinizden emin misiniz?')) {
+                zikir33 = { estagfir: 0, salli: 0, kelime: 0 };
+                saveData('zikir33', zikir33);
+                updateZikir33();
+                showNotification('Zikirler sıfırlandı!');
+            }
+        }
+
+        function updateIhlas() {
+            const percentage = ((ihlasCount / 40000) * 100).toFixed(1);
+            document.getElementById('ihlas-count').textContent = ihlasCount.toLocaleString();
+            document.getElementById('ihlas-progress').style.width = percentage + '%';
+            document.getElementById('ihlas-progress').textContent = percentage + '%';
+        }
+
+        function incrementIhlas() {
+            ihlasCount++;
+            
+            if (ihlasCount >= 40000) {
+                ihlasCount = 0;
+                showNotification('40.000 İhlas tamamlandı ve sıfırlandı!');
+            }
+            
+            saveData('ihlasCount', ihlasCount);
+            updateIhlas();
+        }
+
+        // Sayfa yüklendiğinde
+        window.onload = function() {
+            updateTransactionStats();
+            renderTransactions();
+            drawPieChart();
+            updateSpendingStats();
+            renderSpending();
+            updateMainZikir();
+            updateTesbih();
+            updateZikir33();
+            updateIhlas();
+        };
     </script>
 </body>
 </html>
