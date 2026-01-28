@@ -2,89 +2,153 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>DUHA</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #1a1a1a;
+            --secondary: #6b7280;
+            --accent: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #ffffff;
+            --bg-secondary: #f9fafb;
+            --border: #e5e7eb;
+            --text: #111827;
+            --text-secondary: #6b7280;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
-            color: #333;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
         .header {
-            background: white;
-            padding: 1rem 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
+            position: fixed;
             top: 0;
+            left: 0;
+            right: 0;
+            height: calc(60px + env(safe-area-inset-top));
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            padding: 0 20px 15px 20px;
             z-index: 1000;
+            padding-top: env(safe-area-inset-top);
         }
 
         .logo {
-            font-size: 1.5rem;
+            font-size: 22px;
             font-weight: 700;
-            color: #2c3e50;
+            letter-spacing: 0.5px;
+            color: var(--primary);
         }
 
         .hamburger {
-            width: 30px;
-            height: 24px;
+            width: 24px;
+            height: 18px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             cursor: pointer;
+            position: relative;
         }
 
         .hamburger span {
             width: 100%;
-            height: 3px;
-            background: #2c3e50;
+            height: 2px;
+            background: var(--primary);
             border-radius: 2px;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .menu {
+        .hamburger.active span:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+
+        .drawer {
             position: fixed;
             top: 0;
-            right: -300px;
-            width: 300px;
+            right: -100%;
+            width: 85%;
+            max-width: 320px;
             height: 100vh;
-            background: white;
-            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
-            transition: right 0.3s;
+            background: var(--bg);
+            box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
             z-index: 2000;
+            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             overflow-y: auto;
+            padding-top: env(safe-area-inset-top);
         }
 
-        .menu.active {
+        .drawer.active {
             right: 0;
         }
 
-        .menu-header {
-            padding: 1.5rem;
-            background: #2c3e50;
-            color: white;
-            font-weight: 600;
+        .drawer-header {
+            padding: 30px 24px 20px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .drawer-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .drawer-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .drawer-menu {
+            padding: 12px 0;
         }
 
         .menu-item {
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid #eee;
+            padding: 16px 24px;
             cursor: pointer;
             transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 16px;
+            color: var(--text);
         }
 
-        .menu-item:hover {
-            background: #f8f9fa;
+        .menu-item:active {
+            background: var(--bg-secondary);
+        }
+
+        .menu-icon {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
         }
 
         .overlay {
@@ -92,25 +156,28 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: none;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
             z-index: 1500;
         }
 
         .overlay.active {
-            display: block;
+            opacity: 1;
+            pointer-events: all;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem 1rem;
+        .content {
+            margin-top: calc(60px + env(safe-area-inset-top));
+            padding: 20px;
+            min-height: calc(100vh - 60px - env(safe-area-inset-top));
         }
 
         .section {
             display: none;
-            animation: fadeIn 0.3s;
+            animation: fadeIn 0.3s ease-out;
         }
 
         .section.active {
@@ -118,181 +185,224 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
         }
 
         .card-title {
-            font-size: 1.25rem;
+            font-size: 18px;
             font-weight: 600;
-            margin-bottom: 1rem;
-            color: #2c3e50;
+            margin-bottom: 16px;
+            color: var(--primary);
         }
 
         .input-group {
-            margin-bottom: 1rem;
+            margin-bottom: 16px;
         }
 
-        .input-group label {
+        .input-label {
             display: block;
-            margin-bottom: 0.5rem;
+            font-size: 14px;
             font-weight: 500;
-            color: #555;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
         }
 
-        .input-group input,
-        .input-group select {
+        .input {
             width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 16px;
+            background: var(--bg);
+            color: var(--text);
+            transition: all 0.2s;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
         .btn {
-            padding: 0.75rem 1.5rem;
+            width: 100%;
+            padding: 14px 20px;
             border: none;
-            border-radius: 8px;
-            font-size: 1rem;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-            font-weight: 500;
+            margin-top: 8px;
         }
 
         .btn-primary {
-            background: #3498db;
+            background: var(--accent);
             color: white;
         }
 
-        .btn-primary:hover {
-            background: #2980b9;
-        }
-
-        .btn-success {
-            background: #27ae60;
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #229954;
+        .btn-primary:active {
+            transform: scale(0.98);
+            opacity: 0.9;
         }
 
         .btn-danger {
-            background: #e74c3c;
+            background: var(--danger);
             color: white;
         }
 
-        .btn-danger:hover {
-            background: #c0392b;
-        }
-
-        .btn-small {
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-        }
-
-        .transaction-list {
-            margin-top: 1.5rem;
-        }
-
-        .transaction-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            background: #f8f9fa;
-            border-radius: 8px;
-            margin-bottom: 0.75rem;
-        }
-
-        .transaction-info {
-            flex: 1;
-        }
-
-        .transaction-amount {
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-right: 1rem;
-        }
-
-        .transaction-amount.income {
-            color: #27ae60;
-        }
-
-        .transaction-amount.expense {
-            color: #e74c3c;
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text);
+            border: 1px solid var(--border);
         }
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
         }
 
         .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1.5rem;
+            background: var(--bg-secondary);
             border-radius: 12px;
-            text-align: center;
-        }
-
-        .stat-card.income {
-            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
-        }
-
-        .stat-card.expense {
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-        }
-
-        .stat-card.net {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            padding: 16px;
+            border: 1px solid var(--border);
         }
 
         .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            margin-bottom: 0.5rem;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
         }
 
         .stat-value {
-            font-size: 1.75rem;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-value.success {
+            color: var(--success);
+        }
+
+        .stat-value.danger {
+            color: var(--danger);
+        }
+
+        .stat-value.warning {
+            color: var(--warning);
+        }
+
+        .info-box {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .info-box.success {
+            border-left-color: var(--success);
+        }
+
+        .info-box.warning {
+            border-left-color: var(--warning);
+        }
+
+        .info-box.danger {
+            border-left-color: var(--danger);
+        }
+
+        .info-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--primary);
+        }
+
+        .info-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .list-item {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .item-subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .item-amount {
+            font-size: 18px;
             font-weight: 700;
         }
 
-        .chart-container {
-            max-width: 400px;
-            margin: 2rem auto;
+        .item-amount.expense {
+            color: var(--danger);
+        }
+
+        .item-amount.income {
+            color: var(--success);
         }
 
         .zikir-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 2rem;
+            padding: 40px 20px;
         }
 
         .zikir-button {
-            width: 250px;
-            height: 250px;
+            width: 220px;
+            height: 220px;
             border-radius: 50%;
             border: none;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            font-size: 3rem;
+            font-size: 64px;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.3);
             transition: all 0.2s;
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -302,799 +412,949 @@
             transform: scale(0.95);
         }
 
-        .zikir-info {
-            margin-top: 2rem;
+        .zikir-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            top: 0;
+            left: 0;
+        }
+
+        .zikir-label {
+            margin-top: 24px;
+            font-size: 16px;
+            color: var(--text-secondary);
             text-align: center;
-            font-size: 1.25rem;
-            color: #555;
+        }
+
+        .zikir-mode-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            padding: 4px 0;
+        }
+
+        .mode-btn {
+            padding: 10px 20px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .mode-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
         }
 
         .progress-bar {
             width: 100%;
-            height: 30px;
-            background: #e0e0e0;
-            border-radius: 15px;
+            height: 8px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
             overflow: hidden;
-            margin: 1rem 0;
+            margin: 16px 0;
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #27ae60, #229954);
+            background: linear-gradient(90deg, var(--accent), #667eea);
             transition: width 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
+            border-radius: 8px;
         }
 
-        .zikir-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .zikir-card {
-            background: white;
-            border-radius: 12px;
-            padding: 2rem;
+        .progress-text {
             text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        .zikir-card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: #2c3e50;
-        }
-
-        .zikir-count {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #667eea;
-            margin: 1rem 0;
-        }
-
-        .zikir-card-btn {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: none;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            font-size: 2rem;
-            cursor: pointer;
-            margin: 1rem auto;
-            display: block;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-            transition: all 0.2s;
-        }
-
-        .zikir-card-btn:active {
-            transform: scale(0.95);
-        }
-
-        @media (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .zikir-button {
-                width: 200px;
-                height: 200px;
-                font-size: 2.5rem;
-            }
-
-            .container {
-                padding: 1rem 0.75rem;
-            }
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 8px;
         }
 
         .notification {
             position: fixed;
-            top: 80px;
+            top: calc(70px + env(safe-area-inset-top));
+            left: 20px;
             right: 20px;
-            background: #27ae60;
+            background: var(--primary);
             color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            display: none;
+            padding: 16px 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            transform: translateY(-120%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 3000;
-            animation: slideIn 0.3s;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
         }
 
         .notification.show {
-            display: block;
+            transform: translateY(0);
         }
 
-        .tab-buttons {
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        .empty-text {
+            font-size: 16px;
+        }
+
+        .btn-group {
             display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
         }
 
-        .tab-btn {
-            padding: 0.75rem 1.5rem;
-            border: 2px solid #3498db;
-            background: white;
-            color: #3498db;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-weight: 500;
+        .btn-group .btn {
+            margin-top: 0;
         }
 
-        .tab-btn.active {
-            background: #3498db;
-            color: white;
+        .full-width {
+            grid-column: 1 / -1;
         }
 
-        .date-input {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 24px 0;
         }
 
-        .date-input input {
-            flex: 1;
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
     <div class="header">
         <div class="logo">DUHA</div>
-        <div class="hamburger" onclick="toggleMenu()">
+        <div class="hamburger" onclick="toggleDrawer()">
             <span></span>
             <span></span>
             <span></span>
         </div>
     </div>
 
-    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+    <div class="overlay" onclick="toggleDrawer()"></div>
 
-    <div class="menu" id="menu">
-        <div class="menu-header">Menü</div>
-        <div class="menu-item" onclick="showSection('gelir-gider')">Gelir Gider Takibi</div>
-        <div class="menu-item" onclick="showSection('harca')">Harca Mali Takibi</div>
-        <div class="menu-item" onclick="showSection('izin')">İzin Günleri Hesaplama</div>
-        <div class="menu-item" onclick="showSection('zikirmatik')">Zikirmatik</div>
+    <div class="drawer">
+        <div class="drawer-header">
+            <div class="drawer-title">Menü</div>
+            <div class="drawer-subtitle">Navigasyon</div>
+        </div>
+        <div class="drawer-menu">
+            <div class="menu-item" onclick="showSection('home')">
+                <span class="menu-icon">🏠</span>
+                <span>Ana Panel</span>
+            </div>
+            <div class="menu-item" onclick="showSection('earnings')">
+                <span class="menu-icon">💰</span>
+                <span>Kazanç & Yevmiye</span>
+            </div>
+            <div class="menu-item" onclick="showSection('expenses')">
+                <span class="menu-icon">📉</span>
+                <span>Harcamalar</span>
+            </div>
+            <div class="menu-item" onclick="showSection('simulation')">
+                <span class="menu-icon">🧮</span>
+                <span>Simülasyon</span>
+            </div>
+            <div class="menu-item" onclick="showSection('zikir')">
+                <span class="menu-icon">🕌</span>
+                <span>Zikir</span>
+            </div>
+            <div class="menu-item" onclick="showSection('settings')">
+                <span class="menu-icon">⚙️</span>
+                <span>Ayarlar</span>
+            </div>
+        </div>
     </div>
 
     <div class="notification" id="notification"></div>
 
-    <div class="container">
-        <!-- GELİR GİDER TAKİBİ -->
-        <div class="section active" id="gelir-gider">
+    <div class="content">
+        <!-- ANA PANEL -->
+        <div class="section active" id="home">
+            <h1 class="section-title">Ana Panel</h1>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Bu Hafta Kazanç</div>
+                    <div class="stat-value success" id="home-weekly-earnings">0₺</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Elde Kalan</div>
+                    <div class="stat-value" id="home-remaining">0₺</div>
+                </div>
+            </div>
+
+            <div id="home-advice"></div>
+
             <div class="card">
-                <h2 class="card-title">Gelir Gider Takibi</h2>
+                <div class="card-title">Hızlı Bilgiler</div>
+                <div class="info-text" style="margin-bottom: 12px;">
+                    <strong>Günlük Yevmiye:</strong> <span id="home-daily-wage">0₺</span>
+                </div>
+                <div class="info-text" style="margin-bottom: 12px;">
+                    <strong>Şu Ana Kadar Kazanılan:</strong> <span id="home-earned-so-far">0₺</span>
+                </div>
+                <div class="info-text">
+                    <strong>Toplam Harcama:</strong> <span id="home-total-spent">0₺</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- KAZANÇ & YEVMİYE -->
+        <div class="section" id="earnings">
+            <h1 class="section-title">Kazanç & Yevmiye</h1>
+
+            <div class="card">
+                <div class="card-title">Temel Bilgiler</div>
+
+                <div class="input-group">
+                    <label class="input-label">Günlük Yevmiye (₺)</label>
+                    <input type="number" class="input" id="daily-wage" placeholder="500">
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Bu Hafta Çalışılacak Gün</label>
+                    <input type="number" class="input" id="work-days" placeholder="6" min="0" max="7">
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">İzin Günü Sayısı</label>
+                    <input type="number" class="input" id="days-off" placeholder="0" min="0">
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Ekstra Çalışma Günü</label>
+                    <input type="number" class="input" id="extra-days" placeholder="0" min="0">
+                </div>
+
+                <button class="btn btn-primary" onclick="saveEarnings()">Kaydet</button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Mali Durum</div>
+
+                <div class="input-group">
+                    <label class="input-label">Şu Ana Kadar Kazanılan (₺)</label>
+                    <input type="number" class="input" id="earned-so-far" placeholder="0">
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Şu Ana Kadar Harcanan (₺)</label>
+                    <input type="number" class="input" id="spent-so-far" placeholder="0">
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Planlanan Harcamalar (₺)</label>
+                    <input type="number" class="input" id="planned-expenses" placeholder="0">
+                </div>
+
+                <button class="btn btn-primary" onclick="saveFinancialStatus()">Güncelle</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card full-width">
+                    <div class="stat-label">Bu Hafta Toplam Kazanç</div>
+                    <div class="stat-value success" id="total-weekly-earnings">0₺</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Kazanılmış Olmalı</div>
+                    <div class="stat-value" id="should-have-earned">0₺</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Elde Kalmalı</div>
+                    <div class="stat-value" id="should-remain">0₺</div>
+                </div>
+            </div>
+
+            <div id="earnings-advice"></div>
+        </div>
+
+        <!-- HARCAMALAR -->
+        <div class="section" id="expenses">
+            <h1 class="section-title">Harcamalar</h1>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Toplam Harcama</div>
+                    <div class="stat-value danger" id="total-expenses">0₺</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Bu Ay</div>
+                    <div class="stat-value" id="monthly-expenses">0₺</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Yeni Harcama</div>
+
+                <div class="input-group">
+                    <label class="input-label">Açıklama</label>
+                    <input type="text" class="input" id="expense-desc" placeholder="Market alışverişi">
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Tutar (₺)</label>
+                    <input type="number" class="input" id="expense-amount" placeholder="100">
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Kategori</label>
+                    <select class="input" id="expense-category">
+                        <option value="Yemek">Yemek</option>
+                        <option value="Ulaşım">Ulaşım</option>
+                        <option value="Alışveriş">Alışveriş</option>
+                        <option value="Fatura">Fatura</option>
+                        <option value="Eğlence">Eğlence</option>
+                        <option value="Diğer">Diğer</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Tarih</label>
+                    <input type="date" class="input" id="expense-date">
+                </div>
+
+                <button class="btn btn-primary" onclick="addExpense()">Harcama Ekle</button>
+            </div>
+
+            <div id="expenses-list"></div>
+        </div>
+
+        <!-- SİMÜLASYON -->
+        <div class="section" id="simulation">
+            <h1 class="section-title">İzin & Telafi Simülasyonu</h1>
+
+            <div class="card">
+                <div class="card-title">İzin Simülasyonu</div>
+
+                <div class="input-group">
+                    <label class="input-label">Kaç Gün İzin?</label>
+                    <input type="number" class="input" id="sim-days-off" placeholder="1" min="0">
+                </div>
+
+                <button class="btn btn-primary" onclick="simulateDaysOff()">Hesapla</button>
+
+                <div id="sim-off-result"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Ekstra Çalışma Simülasyonu</div>
+
+                <div class="input-group">
+                    <label class="input-label">Kaç Gün Ekstra?</label>
+                    <input type="number" class="input" id="sim-extra-days" placeholder="1" min="0">
+                </div>
+
+                <button class="btn btn-primary" onclick="simulateExtraDays()">Hesapla</button>
+
+                <div id="sim-extra-result"></div>
+            </div>
+        </div>
+
+        <!-- ZİKİR -->
+        <div class="section" id="zikir">
+            <h1 class="section-title">Zikir Paneli</h1>
+
+            <div class="card">
+                <div class="zikir-mode-selector">
+                    <button class="mode-btn active" onclick="switchZikirMode('free')">Serbest</button>
+                    <button class="mode-btn" onclick="switchZikirMode('tesbih')">Namaz Tesbihatı</button>
+                    <button class="mode-btn" onclick="switchZikirMode('zikir33')">33+33+33</button>
+                    <button class="mode-btn" onclick="switchZikirMode('ihlas')">40.000 İhlas</button>
+                </div>
+
+                <div id="zikir-free" class="zikir-panel">
+                    <div class="zikir-container">
+                        <button class="zikir-button" onclick="incrementFreeZikir()">
+                            <div class="zikir-ring"></div>
+                            <span id="free-count">0</span>
+                        </button>
+                        <div class="zikir-label">Serbest Zikir</div>
+                        <button class="btn btn-secondary" style="margin-top: 20px; max-width: 200px;" onclick="resetFreeZikir()">Sıfırla</button>
+                    </div>
+                </div>
+
+                <div id="zikir-tesbih" class="zikir-panel" style="display: none;">
+                    <div class="zikir-container">
+                        <div id="tesbih-current-name" style="font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--primary);">Subhanallah</div>
+                        <button class="zikir-button" onclick="incrementTesbih()">
+                            <div class="zikir-ring"></div>
+                            <span id="tesbih-count">0</span>
+                        </button>
+                        <div class="zikir-label" id="tesbih-label">0 / 33</div>
+                        <div class="progress-bar" style="margin-top: 24px; width: 100%; max-width: 300px;">
+                            <div class="progress-fill" id="tesbih-progress" style="width: 0%;"></div>
+                        </div>
+                        <button class="btn btn-secondary" style="margin-top: 20px; max-width: 200px;" onclick="resetTesbih()">Sıfırla</button>
+                    </div>
+                </div>
+
+                <div id="zikir-zikir33" class="zikir-panel" style="display: none;">
+                    <div class="zikir-container">
+                        <div id="zikir33-current-name" style="font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--primary);">Estağfirullah</div>
+                        <button class="zikir-button" onclick="incrementZikir33()">
+                            <div class="zikir-ring"></div>
+                            <span id="zikir33-count">0</span>
+                        </button>
+                        <div class="zikir-label" id="zikir33-label">0 / 33</div>
+                        <div class="progress-bar" style="margin-top: 24px; width: 100%; max-width: 300px;">
+                            <div class="progress-fill" id="zikir33-progress" style="width: 0%;"></div>
+                        </div>
+                        <button class="btn btn-secondary" style="margin-top: 20px; max-width: 200px;" onclick="resetZikir33()">Sıfırla</button>
+                    </div>
+                </div>
+
+                <div id="zikir-ihlas" class="zikir-panel" style="display: none;">
+                    <div class="zikir-container">
+                        <div style="font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--primary);">İhlas Suresi</div>
+                        <button class="zikir-button" onclick="incrementIhlas()">
+                            <div class="zikir-ring"></div>
+                            <span id="ihlas-count">0</span>
+                        </button>
+                        <div class="zikir-label">Kalan: <span id="ihlas-remaining">40.000</span></div>
+                        <div class="progress-bar" style="margin-top: 24px; width: 100%; max-width: 300px;">
+                            <div class="progress-fill" id="ihlas-progress" style="width: 0%;"></div>
+                        </div>
+                        <div class="progress-text" id="ihlas-percent">0%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AYARLAR -->
+        <div class="section" id="settings">
+            <h1 class="section-title">Ayarlar</h1>
+
+            <div class="card">
+                <div class="card-title">Veri Yönetimi</div>
                 
-                <div class="stats-grid">
-                    <div class="stat-card income">
-                        <div class="stat-label">Toplam Gelir</div>
-                        <div class="stat-value" id="totalIncome">0₺</div>
-                    </div>
-                    <div class="stat-card expense">
-                        <div class="stat-label">Toplam Gider</div>
-                        <div class="stat-value" id="totalExpense">0₺</div>
-                    </div>
-                    <div class="stat-card net">
-                        <div class="stat-label">Net Kazanç</div>
-                        <div class="stat-value" id="netIncome">0₺</div>
-                    </div>
-                </div>
-
-                <div class="chart-container">
-                    <canvas id="pieChart"></canvas>
-                </div>
-
-                <div class="tab-buttons">
-                    <button class="tab-btn active" onclick="switchTab('gunluk')">Günlük</button>
-                    <button class="tab-btn" onclick="switchTab('haftalik')">Haftalık</button>
-                    <button class="tab-btn" onclick="switchTab('aylik')">Aylık</button>
-                </div>
-
-                <div class="input-group">
-                    <label>Açıklama</label>
-                    <input type="text" id="transactionDesc" placeholder="Örn: Kahve satışı">
-                </div>
-
-                <div class="input-group">
-                    <label>Tutar (₺)</label>
-                    <input type="number" id="transactionAmount" placeholder="0">
-                </div>
-
-                <div class="input-group">
-                    <label>Tarih</label>
-                    <input type="date" id="transactionDate">
-                </div>
-
-                <div class="input-group">
-                    <label>Tür</label>
-                    <select id="transactionType">
-                        <option value="income">Gelir</option>
-                        <option value="expense">Gider</option>
-                    </select>
-                </div>
-
-                <button class="btn btn-success" onclick="addTransaction()">Kaydet</button>
-
-                <div class="transaction-list" id="transactionList"></div>
-            </div>
-        </div>
-
-        <!-- HARCA MALİ TAKİBİ -->
-        <div class="section" id="harca">
-            <div class="card">
-                <h2 class="card-title">Harca Mali Takibi</h2>
-
-                <div class="stats-grid">
-                    <div class="stat-card expense">
-                        <div class="stat-label">Toplam Harcama</div>
-                        <div class="stat-value" id="totalSpending">0₺</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Aylık Harcama</div>
-                        <div class="stat-value" id="monthlySpending">0₺</div>
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label>Harcama Açıklaması</label>
-                    <input type="text" id="spendingDesc" placeholder="Örn: Market alışverişi">
-                </div>
-
-                <div class="input-group">
-                    <label>Tutar (₺)</label>
-                    <input type="number" id="spendingAmount" placeholder="0">
-                </div>
-
-                <div class="input-group">
-                    <label>Tarih</label>
-                    <input type="date" id="spendingDate">
-                </div>
-
-                <button class="btn btn-success" onclick="addSpending()">Harcama Ekle</button>
-
-                <div class="transaction-list" id="spendingList"></div>
-            </div>
-        </div>
-
-        <!-- İZİN GÜNLERİ HESAPLAMA -->
-        <div class="section" id="izin">
-            <div class="card">
-                <h2 class="card-title">İzin Günleri Hesaplama</h2>
-
-                <div class="input-group">
-                    <label>Haftalık Ortalama Kazanç (₺)</label>
-                    <input type="number" id="weeklyIncome" placeholder="0">
-                </div>
-
-                <div class="input-group">
-                    <label>İzin Günü Seç</label>
-                    <select id="dayOff">
-                        <option value="1">Pazartesi</option>
-                        <option value="2">Salı</option>
-                        <option value="3">Çarşamba</option>
-                        <option value="4">Perşembe</option>
-                        <option value="5">Cuma</option>
-                        <option value="6">Cumartesi</option>
-                        <option value="0">Pazar</option>
-                    </select>
-                </div>
-
-                <button class="btn btn-primary" onclick="calculateDayOff()">Hesapla</button>
-
-                <div class="stats-grid" style="margin-top: 2rem;">
-                    <div class="stat-card expense">
-                        <div class="stat-label">Günlük Kayıp</div>
-                        <div class="stat-value" id="dailyLoss">0₺</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Yeni Haftalık Kazanç</div>
-                        <div class="stat-value" id="newWeeklyIncome">0₺</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ZİKİRMATİK -->
-        <div class="section" id="zikirmatik">
-            <div class="card">
-                <h2 class="card-title">Zikirmatik Ana Panel</h2>
-                <div class="zikir-container">
-                    <button class="zikir-button" onclick="incrementMainZikir()" id="mainZikirBtn">0</button>
-                    <div class="zikir-info">Zikir sayısı</div>
-                    <button class="btn btn-danger" style="margin-top: 1rem;" onclick="resetMainZikir()">Sıfırla</button>
-                </div>
+                <button class="btn btn-danger" onclick="resetAllData()">Tüm Verileri Sıfırla</button>
+                <button class="btn btn-secondary" onclick="resetEarningsData()">Kazanç Verilerini Sıfırla</button>
+                <button class="btn btn-secondary" onclick="resetExpensesData()">Harcama Verilerini Sıfırla</button>
+                <button class="btn btn-secondary" onclick="resetZikirData()">Zikir Verilerini Sıfırla</button>
             </div>
 
             <div class="card">
-                <h2 class="card-title">Namaz Sonrası Tesbihat</h2>
-                <div class="zikir-grid">
-                    <div class="zikir-card">
-                        <div class="zikir-card-title">Subhanallah</div>
-                        <div class="zikir-count" id="subhan-count">0/33</div>
-                        <button class="zikir-card-btn" onclick="incrementTesbih('subhan')">+</button>
-                    </div>
-                    <div class="zikir-card">
-                        <div class="zikir-card-title">Elhamdülillah</div>
-                        <div class="zikir-count" id="elhamd-count">0/33</div>
-                        <button class="zikir-card-btn" onclick="incrementTesbih('elhamd')">+</button>
-                    </div>
-                    <div class="zikir-card">
-                        <div class="zikir-card-title">Allahu Ekber</div>
-                        <div class="zikir-count" id="tekbir-count">0/34</div>
-                        <button class="zikir-card-btn" onclick="incrementTesbih('tekbir')">+</button>
-                    </div>
-                </div>
-                <button class="btn btn-danger" style="margin-top: 1rem;" onclick="resetTesbih()">Tümünü Sıfırla</button>
-            </div>
-
-            <div class="card">
-                <h2 class="card-title">33+33+33 Zikir Paneli</h2>
-                <div class="zikir-grid">
-                    <div class="zikir-card">
-                        <div class="zikir-card-title">Estağfirullah</div>
-                        <div class="zikir-count" id="estagfir-count">0/33</div>
-                        <button class="zikir-card-btn" onclick="incrementZikir33('estagfir')">+</button>
-                    </div>
-                    <div class="zikir-card">
-                        <div class="zikir-card-title">Allahümme Salli</div>
-                        <div class="zikir-count" id="salli-count">0/33</div>
-                        <button class="zikir-card-btn" onclick="incrementZikir33('salli')">+</button>
-                    </div>
-                    <div class="zikir-card">
-                        <div class="zikir-card-title">La ilahe illallah</div>
-                        <div class="zikir-count" id="kelime-count">0/33</div>
-                        <button class="zikir-card-btn" onclick="incrementZikir33('kelime')">+</button>
-                    </div>
-                </div>
-                <button class="btn btn-danger" style="margin-top: 1rem;" onclick="resetZikir33()">Tümünü Sıfırla</button>
-            </div>
-
-            <div class="card">
-                <h2 class="card-title">40.000 İhlas Sayacı</h2>
-                <div class="zikir-container">
-                    <div class="zikir-count" style="font-size: 3rem;" id="ihlas-count">0</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="ihlas-progress" style="width: 0%;">0%</div>
-                    </div>
-                    <button class="zikir-button" onclick="incrementIhlas()" style="margin-top: 2rem;">+1</button>
+                <div class="card-title">Uygulama Bilgisi</div>
+                <div class="info-text" style="line-height: 1.6;">
+                    <strong>DUHA</strong> - Kişisel Finans ve Zikir Takip Uygulaması<br>
+                    Versiyon: 1.0<br>
+                    Tüm veriler cihazınızda güvenle saklanır.
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // LocalStorage yardımcı fonksiyonlar
+        // LocalStorage Helpers
         function saveData(key, value) {
             localStorage.setItem(key, JSON.stringify(value));
         }
 
-        function loadData(key, defaultValue = []) {
+        function loadData(key, defaultValue = null) {
             const data = localStorage.getItem(key);
             return data ? JSON.parse(data) : defaultValue;
         }
 
-        // Menü toggle
-        function toggleMenu() {
-            const menu = document.getElementById('menu');
-            const overlay = document.getElementById('overlay');
-            menu.classList.toggle('active');
-            overlay.classList.toggle('active');
-        }
-
-        // Bölüm gösterme
-        function showSection(sectionId) {
-            const sections = document.querySelectorAll('.section');
-            sections.forEach(s => s.classList.remove('active'));
-            document.getElementById(sectionId).classList.add('active');
-            toggleMenu();
+        // UI Controls
+        function toggleDrawer() {
+            const drawer = document.querySelector('.drawer');
+            const overlay = document.querySelector('.overlay');
+            const hamburger = document.querySelector('.hamburger');
             
-            if (sectionId === 'gelir-gider') {
-                updateTransactionStats();
-                renderTransactions();
-                drawPieChart();
-            } else if (sectionId === 'harca') {
-                updateSpendingStats();
-                renderSpending();
-            }
+            drawer.classList.toggle('active');
+            overlay.classList.toggle('active');
+            hamburger.classList.toggle('active');
         }
 
-        // Bildirim gösterme
-        function showNotification(message) {
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            toggleDrawer();
+            
+            if (sectionId === 'home') updateHomePage();
+            if (sectionId === 'earnings') loadEarningsData();
+            if (sectionId === 'expenses') loadExpensesData();
+        }
+
+        function showNotification(message, duration = 3000) {
             const notification = document.getElementById('notification');
             notification.textContent = message;
             notification.classList.add('show');
+            
             setTimeout(() => {
                 notification.classList.remove('show');
-            }, 3000);
+            }, duration);
         }
 
-        // GELİR GİDER TAKİBİ
-        let transactions = loadData('transactions', []);
-        let currentTab = 'gunluk';
-
-        document.getElementById('transactionDate').valueAsDate = new Date();
-
-        function switchTab(tab) {
-            currentTab = tab;
-            const buttons = document.querySelectorAll('.tab-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            updateTransactionStats();
-            renderTransactions();
-            drawPieChart();
+        // KAZANÇ & YEVMİYE
+        function saveEarnings() {
+            const data = {
+                dailyWage: parseFloat(document.getElementById('daily-wage').value) || 0,
+                workDays: parseInt(document.getElementById('work-days').value) || 0,
+                daysOff: parseInt(document.getElementById('days-off').value) || 0,
+                extraDays: parseInt(document.getElementById('extra-days').value) || 0
+            };
+            
+            saveData('earnings', data);
+            calculateEarnings();
+            showNotification('Kazanç bilgileri kaydedildi');
         }
 
-        function addTransaction() {
-            const desc = document.getElementById('transactionDesc').value;
-            const amount = parseFloat(document.getElementById('transactionAmount').value);
-            const date = document.getElementById('transactionDate').value;
-            const type = document.getElementById('transactionType').value;
+        function saveFinancialStatus() {
+            const data = {
+                earnedSoFar: parseFloat(document.getElementById('earned-so-far').value) || 0,
+                spentSoFar: parseFloat(document.getElementById('spent-so-far').value) || 0,
+                plannedExpenses: parseFloat(document.getElementById('planned-expenses').value) || 0
+            };
+            
+            saveData('financialStatus', data);
+            calculateEarnings();
+            showNotification('Mali durum güncellendi');
+        }
 
+        function loadEarningsData() {
+            const earnings = loadData('earnings', {
+                dailyWage: 0,
+                workDays: 6,
+                daysOff: 0,
+                extraDays: 0
+            });
+            
+            const financial = loadData('financialStatus', {
+                earnedSoFar: 0,
+                spentSoFar: 0,
+                plannedExpenses: 0
+            });
+            
+            document.getElementById('daily-wage').value = earnings.dailyWage;
+            document.getElementById('work-days').value = earnings.workDays;
+            document.getElementById('days-off').value = earnings.daysOff;
+            document.getElementById('extra-days').value = earnings.extraDays;
+            
+            document.getElementById('earned-so-far').value = financial.earnedSoFar;
+            document.getElementById('spent-so-far').value = financial.spentSoFar;
+            document.getElementById('planned-expenses').value = financial.plannedExpenses;
+            
+            calculateEarnings();
+        }
+
+        function calculateEarnings() {
+            const earnings = loadData('earnings', {
+                dailyWage: 0,
+                workDays: 6,
+                daysOff: 0,
+                extraDays: 0
+            });
+            
+            const financial = loadData('financialStatus', {
+                earnedSoFar: 0,
+                spentSoFar: 0,
+                plannedExpenses: 0
+            });
+            
+            const actualWorkDays = earnings.workDays - earnings.daysOff + earnings.extraDays;
+            const totalWeeklyEarnings = earnings.dailyWage * actualWorkDays;
+            const shouldHaveEarned = earnings.dailyWage * earnings.workDays;
+            const shouldRemain = shouldHaveEarned - financial.spentSoFar - financial.plannedExpenses;
+            
+            document.getElementById('total-weekly-earnings').textContent = totalWeeklyEarnings.toFixed(0) + '₺';
+            document.getElementById('should-have-earned').textContent = shouldHaveEarned.toFixed(0) + '₺';
+            document.getElementById('should-remain').textContent = shouldRemain.toFixed(0) + '₺';
+            
+            const adviceContainer = document.getElementById('earnings-advice');
+            adviceContainer.innerHTML = '';
+            
+            const actualRemaining = financial.earnedSoFar - financial.spentSoFar;
+            
+            if (actualRemaining > shouldRemain) {
+                adviceContainer.innerHTML = '<div class="info-box success"><div class="info-title">Harika!</div><div class="info-text">İyi gidiyorsun, planın üstündesin.</div></div>';
+            } else if (actualRemaining < shouldRemain * 0.7) {
+                adviceContainer.innerHTML = '<div class="info-box danger"><div class="info-title">Dikkat!</div><div class="info-text">Fazla harcıyorsun, dikkatli ol.</div></div>';
+            } else if (earnings.daysOff > 0) {
+                adviceContainer.innerHTML = '<div class="info-box warning"><div class="info-title">Uyarı</div><div class="info-text">İzin günleri kazancını azaltıyor.</div></div>';
+            } else {
+                adviceContainer.innerHTML = '<div class="info-box"><div class="info-title">İyi</div><div class="info-text">Bütçe dengede görünüyor.</div></div>';
+            }
+        }
+
+        // HARCAMALAR
+        let expenses = loadData('expenses', []);
+
+        function addExpense() {
+            const desc = document.getElementById('expense-desc').value;
+            const amount = parseFloat(document.getElementById('expense-amount').value);
+            const category = document.getElementById('expense-category').value;
+            const date = document.getElementById('expense-date').value;
+            
             if (!desc || !amount || !date) {
-                showNotification('Lütfen tüm alanları doldurun!');
+                showNotification('Lütfen tüm alanları doldurun');
                 return;
             }
-
-            transactions.push({
+            
+            expenses.push({
                 id: Date.now(),
                 desc,
                 amount,
-                date,
-                type
-            });
-
-            saveData('transactions', transactions);
-            updateTransactionStats();
-            renderTransactions();
-            drawPieChart();
-
-            document.getElementById('transactionDesc').value = '';
-            document.getElementById('transactionAmount').value = '';
-            showNotification('İşlem eklendi!');
-        }
-
-        function deleteTransaction(id) {
-            transactions = transactions.filter(t => t.id !== id);
-            saveData('transactions', transactions);
-            updateTransactionStats();
-            renderTransactions();
-            drawPieChart();
-            showNotification('İşlem silindi!');
-        }
-
-        function getFilteredTransactions() {
-            const now = new Date();
-            const today = now.toISOString().split('T')[0];
-            
-            return transactions.filter(t => {
-                const tDate = new Date(t.date);
-                
-                if (currentTab === 'gunluk') {
-                    return t.date === today;
-                } else if (currentTab === 'haftalik') {
-                    const weekAgo = new Date(now);
-                    weekAgo.setDate(weekAgo.getDate() - 7);
-                    return tDate >= weekAgo;
-                } else if (currentTab === 'aylik') {
-                    const monthAgo = new Date(now);
-                    monthAgo.setMonth(monthAgo.getMonth() - 1);
-                    return tDate >= monthAgo;
-                }
-                return true;
-            });
-        }
-
-        function updateTransactionStats() {
-            const filtered = getFilteredTransactions();
-            const income = filtered.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
-            const expense = filtered.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
-            const net = income - expense;
-
-            document.getElementById('totalIncome').textContent = income.toFixed(2) + '₺';
-            document.getElementById('totalExpense').textContent = expense.toFixed(2) + '₺';
-            document.getElementById('netIncome').textContent = net.toFixed(2) + '₺';
-        }
-
-        function renderTransactions() {
-            const filtered = getFilteredTransactions();
-            const list = document.getElementById('transactionList');
-            
-            if (filtered.length === 0) {
-                list.innerHTML = '<div style="text-align: center; padding: 2rem; color: #999;">Henüz işlem yok</div>';
-                return;
-            }
-
-            list.innerHTML = filtered.sort((a, b) => new Date(b.date) - new Date(a.date)).map(t => `
-                <div class="transaction-item">
-                    <div class="transaction-info">
-                        <div style="font-weight: 600; margin-bottom: 0.25rem;">${t.desc}</div>
-                        <div style="font-size: 0.85rem; color: #666;">${t.date}</div>
-                    </div>
-                    <div class="transaction-amount ${t.type}">${t.type === 'income' ? '+' : '-'}${t.amount.toFixed(2)}₺</div>
-                    <button class="btn btn-danger btn-small" onclick="deleteTransaction(${t.id})">Sil</button>
-                </div>
-            `).join('');
-        }
-
-        function drawPieChart() {
-            const filtered = getFilteredTransactions();
-            const income = filtered.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
-            const expense = filtered.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
-            const remaining = income - expense;
-
-            const canvas = document.getElementById('pieChart');
-            const ctx = canvas.getContext('2d');
-            canvas.width = 300;
-            canvas.height = 300;
-
-            const total = income + expense;
-            if (total === 0) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = '#999';
-                ctx.font = '16px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText('Veri yok', canvas.width / 2, canvas.height / 2);
-                return;
-            }
-
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const radius = 100;
-
-            let currentAngle = -Math.PI / 2;
-
-            const data = [
-                { label: 'Gelir', value: income, color: '#27ae60' },
-                { label: 'Gider', value: expense, color: '#e74c3c' }
-            ];
-
-            data.forEach(item => {
-                const sliceAngle = (item.value / total) * 2 * Math.PI;
-                
-                ctx.beginPath();
-                ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + sliceAngle);
-                ctx.lineTo(centerX, centerY);
-                ctx.fillStyle = item.color;
-                ctx.fill();
-                
-                const textAngle = currentAngle + sliceAngle / 2;
-                const textX = centerX + Math.cos(textAngle) * (radius * 0.7);
-                const textY = centerY + Math.sin(textAngle) * (radius * 0.7);
-                
-                ctx.fillStyle = 'white';
-                ctx.font = 'bold 14px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText(item.label, textX, textY - 10);
-                ctx.fillText(item.value.toFixed(0) + '₺', textX, textY + 10);
-                
-                currentAngle += sliceAngle;
-            });
-        }
-
-        // HARCA MALİ TAKİBİ
-        let spendings = loadData('spendings', []);
-
-        document.getElementById('spendingDate').valueAsDate = new Date();
-
-        function addSpending() {
-            const desc = document.getElementById('spendingDesc').value;
-            const amount = parseFloat(document.getElementById('spendingAmount').value);
-            const date = document.getElementById('spendingDate').value;
-
-            if (!desc || !amount || !date) {
-                showNotification('Lütfen tüm alanları doldurun!');
-                return;
-            }
-
-            spendings.push({
-                id: Date.now(),
-                desc,
-                amount,
+                category,
                 date
             });
-
-            saveData('spendings', spendings);
-            updateSpendingStats();
-            renderSpending();
-
-            document.getElementById('spendingDesc').value = '';
-            document.getElementById('spendingAmount').value = '';
-            showNotification('Harcama eklendi!');
+            
+            saveData('expenses', expenses);
+            
+            document.getElementById('expense-desc').value = '';
+            document.getElementById('expense-amount').value = '';
+            document.getElementById('expense-date').value = '';
+            
+            loadExpensesData();
+            showNotification('Harcama eklendi');
         }
 
-        function deleteSpending(id) {
-            spendings = spendings.filter(s => s.id !== id);
-            saveData('spendings', spendings);
-            updateSpendingStats();
-            renderSpending();
-            showNotification('Harcama silindi!');
+        function deleteExpense(id) {
+            if (confirm('Bu harcamayı silmek istediğinizden emin misiniz?')) {
+                expenses = expenses.filter(e => e.id !== id);
+                saveData('expenses', expenses);
+                loadExpensesData();
+                showNotification('Harcama silindi');
+            }
         }
 
-        function updateSpendingStats() {
-            const total = spendings.reduce((sum, s) => sum + s.amount, 0);
+        function loadExpensesData() {
+            expenses = loadData('expenses', []);
+            
+            const total = expenses.reduce((sum, e) => sum + e.amount, 0);
             
             const now = new Date();
-            const monthAgo = new Date(now);
-            monthAgo.setMonth(monthAgo.getMonth() - 1);
+            const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+            const monthly = expenses.filter(e => new Date(e.date) >= monthStart).reduce((sum, e) => sum + e.amount, 0);
             
-            const monthly = spendings.filter(s => new Date(s.date) >= monthAgo)
-                .reduce((sum, s) => sum + s.amount, 0);
-
-            document.getElementById('totalSpending').textContent = total.toFixed(2) + '₺';
-            document.getElementById('monthlySpending').textContent = monthly.toFixed(2) + '₺';
-        }
-
-        function renderSpending() {
-            const list = document.getElementById('spendingList');
+            document.getElementById('total-expenses').textContent = total.toFixed(0) + '₺';
+            document.getElementById('monthly-expenses').textContent = monthly.toFixed(0) + '₺';
             
-            if (spendings.length === 0) {
-                list.innerHTML = '<div style="text-align: center; padding: 2rem; color: #999;">Henüz harcama yok</div>';
+            const list = document.getElementById('expenses-list');
+            
+            if (expenses.length === 0) {
+                list.innerHTML = '<div class="empty-state"><div class="empty-icon">📊</div><div class="empty-text">Henüz harcama kaydı yok</div></div>';
                 return;
             }
-
-            list.innerHTML = spendings.sort((a, b) => new Date(b.date) - new Date(a.date)).map(s => `
-                <div class="transaction-item">
-                    <div class="transaction-info">
-                        <div style="font-weight: 600; margin-bottom: 0.25rem;">${s.desc}</div>
-                        <div style="font-size: 0.85rem; color: #666;">${s.date}</div>
+            
+            list.innerHTML = expenses.sort((a, b) => new Date(b.date) - new Date(a.date)).map(e => `
+                <div class="list-item">
+                    <div class="item-info">
+                        <div class="item-title">${e.desc}</div>
+                        <div class="item-subtitle">${e.category} • ${e.date}</div>
                     </div>
-                    <div class="transaction-amount expense">-${s.amount.toFixed(2)}₺</div>
-                    <button class="btn btn-danger btn-small" onclick="deleteSpending(${s.id})">Sil</button>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div class="item-amount expense">${e.amount.toFixed(0)}₺</div>
+                        <button class="btn btn-danger" style="padding: 8px 16px; margin: 0; width: auto; font-size: 14px;" onclick="deleteExpense(${e.id})">Sil</button>
+                    </div>
                 </div>
             `).join('');
+            
+            document.getElementById('expense-date').valueAsDate = new Date();
         }
 
-        // İZİN GÜNLERİ HESAPLAMA
-        function calculateDayOff() {
-            const weeklyIncome = parseFloat(document.getElementById('weeklyIncome').value);
+        // SİMÜLASYON
+        function simulateDaysOff() {
+            const earnings = loadData('earnings', { dailyWage: 0 });
+            const daysOff = parseInt(document.getElementById('sim-days-off').value) || 0;
             
-            if (!weeklyIncome || weeklyIncome <= 0) {
-                showNotification('Lütfen geçerli bir haftalık kazanç girin!');
+            if (!earnings.dailyWage) {
+                showNotification('Önce günlük yevmiyeyi ayarlayın');
                 return;
             }
-
-            const dailyLoss = weeklyIncome / 7;
-            const newWeeklyIncome = weeklyIncome - dailyLoss;
-
-            document.getElementById('dailyLoss').textContent = dailyLoss.toFixed(2) + '₺';
-            document.getElementById('newWeeklyIncome').textContent = newWeeklyIncome.toFixed(2) + '₺';
-        }
-
-        // ZİKİRMATİK
-        let mainZikir = loadData('mainZikir', 0);
-        let tesbih = loadData('tesbih', { subhan: 0, elhamd: 0, tekbir: 0 });
-        let zikir33 = loadData('zikir33', { estagfir: 0, salli: 0, kelime: 0 });
-        let ihlasCount = loadData('ihlasCount', 0);
-
-        function updateMainZikir() {
-            document.getElementById('mainZikirBtn').textContent = mainZikir;
-        }
-
-        function incrementMainZikir() {
-            mainZikir++;
-            saveData('mainZikir', mainZikir);
-            updateMainZikir();
-        }
-
-        function resetMainZikir() {
-            if (confirm('Ana zikir sayacını sıfırlamak istediğinizden emin misiniz?')) {
-                mainZikir = 0;
-                saveData('mainZikir', mainZikir);
-                updateMainZikir();
-                showNotification('Ana zikir sıfırlandı!');
-            }
-        }
-
-        function updateTesbih() {
-            document.getElementById('subhan-count').textContent = `${tesbih.subhan}/33`;
-            document.getElementById('elhamd-count').textContent = `${tesbih.elhamd}/33`;
-            document.getElementById('tekbir-count').textContent = `${tesbih.tekbir}/34`;
-        }
-
-        function incrementTesbih(type) {
-            const limits = { subhan: 33, elhamd: 33, tekbir: 34 };
             
-            if (tesbih[type] < limits[type]) {
-                tesbih[type]++;
-                saveData('tesbih', tesbih);
-                updateTesbih();
-                
-                if (tesbih[type] === limits[type]) {
-                    showNotification(`${type.toUpperCase()} tamamlandı!`);
-                }
-                
-                if (tesbih.subhan === 33 && tesbih.elhamd === 33 && tesbih.tekbir === 34) {
+            const loss = earnings.dailyWage * daysOff;
+            const remaining = (earnings.workDays || 6) - daysOff;
+            const newWeekly = earnings.dailyWage * remaining;
+            
+            const result = document.getElementById('sim-off-result');
+            result.innerHTML = `
+                <div class="divider"></div>
+                <div class="stats-grid">
+                    <div class="stat-card full-width">
+                        <div class="stat-label">Toplam Kayıp</div>
+                        <div class="stat-value danger">${loss.toFixed(0)}₺</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Yeni Haftalık</div>
+                        <div class="stat-value">${newWeekly.toFixed(0)}₺</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Kalan Gün</div>
+                        <div class="stat-value">${remaining}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function simulateExtraDays() {
+            const earnings = loadData('earnings', { dailyWage: 0 });
+            const extraDays = parseInt(document.getElementById('sim-extra-days').value) || 0;
+            
+            if (!earnings.dailyWage) {
+                showNotification('Önce günlük yevmiyeyi ayarlayın');
+                return;
+            }
+            
+            const gain = earnings.dailyWage * extraDays;
+            const newWeekly = earnings.dailyWage * ((earnings.workDays || 6) + extraDays);
+            
+            const result = document.getElementById('sim-extra-result');
+            result.innerHTML = `
+                <div class="divider"></div>
+                <div class="stats-grid">
+                    <div class="stat-card full-width">
+                        <div class="stat-label">Ekstra Kazanç</div>
+                        <div class="stat-value success">+${gain.toFixed(0)}₺</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Yeni Haftalık</div>
+                        <div class="stat-value">${newWeekly.toFixed(0)}₺</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Toplam Gün</div>
+                        <div class="stat-value">${(earnings.workDays || 6) + extraDays}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ZİKİR
+        let currentZikirMode = 'free';
+        let freeZikir = loadData('freeZikir', 0);
+        let tesbihData = loadData('tesbih', { phase: 0, count: 0 });
+        let zikir33Data = loadData('zikir33', { phase: 0, count: 0 });
+        let ihlasCount = loadData('ihlas', 0);
+
+        const tesbihPhases = [
+            { name: 'Subhanallah', target: 33 },
+            { name: 'Elhamdülillah', target: 33 },
+            { name: 'Allahu Ekber', target: 34 }
+        ];
+
+        const zikir33Phases = [
+            { name: 'Estağfirullah', target: 33 },
+            { name: 'Allahümme Salli', target: 33 },
+            { name: 'La ilahe illallah', target: 33 }
+        ];
+
+        function switchZikirMode(mode) {
+            currentZikirMode = mode;
+            
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.querySelectorAll('.zikir-panel').forEach(panel => panel.style.display = 'none');
+            document.getElementById('zikir-' + mode).style.display = 'block';
+            
+            updateZikirDisplay();
+        }
+
+        function incrementFreeZikir() {
+            freeZikir++;
+            saveData('freeZikir', freeZikir);
+            updateZikirDisplay();
+        }
+
+        function resetFreeZikir() {
+            if (confirm('Serbest zikir sayacını sıfırlamak istediğinizden emin misiniz?')) {
+                freeZikir = 0;
+                saveData('freeZikir', freeZikir);
+                updateZikirDisplay();
+                showNotification('Sayaç sıfırlandı');
+            }
+        }
+
+        function incrementTesbih() {
+            const phase = tesbihPhases[tesbihData.phase];
+            tesbihData.count++;
+            
+            if (tesbihData.count >= phase.target) {
+                if (tesbihData.phase < tesbihPhases.length - 1) {
+                    tesbihData.phase++;
+                    tesbihData.count = 0;
+                    showNotification(phase.name + ' tamamlandı!');
+                } else {
                     showNotification('Tüm tesbihatlar tamamlandı!');
+                    tesbihData = { phase: 0, count: 0 };
                 }
             }
+            
+            saveData('tesbih', tesbihData);
+            updateZikirDisplay();
         }
 
         function resetTesbih() {
-            if (confirm('Tüm tesbihatları sıfırlamak istediğinizden emin misiniz?')) {
-                tesbih = { subhan: 0, elhamd: 0, tekbir: 0 };
-                saveData('tesbih', tesbih);
-                updateTesbih();
-                showNotification('Tesbihatlar sıfırlandı!');
+            if (confirm('Tesbihat sayacını sıfırlamak istediğinizden emin misiniz?')) {
+                tesbihData = { phase: 0, count: 0 };
+                saveData('tesbih', tesbihData);
+                updateZikirDisplay();
+                showNotification('Tesbihat sıfırlandı');
             }
         }
 
-        function updateZikir33() {
-            document.getElementById('estagfir-count').textContent = `${zikir33.estagfir}/33`;
-            document.getElementById('salli-count').textContent = `${zikir33.salli}/33`;
-            document.getElementById('kelime-count').textContent = `${zikir33.kelime}/33`;
-        }
-
-        function incrementZikir33(type) {
-            if (zikir33[type] < 33) {
-                zikir33[type]++;
-                saveData('zikir33', zikir33);
-                updateZikir33();
-                
-                if (zikir33[type] === 33) {
-                    showNotification(`${type.toUpperCase()} tamamlandı!`);
+        function incrementZikir33() {
+            const phase = zikir33Phases[zikir33Data.phase];
+            zikir33Data.count++;
+            
+            if (zikir33Data.count >= phase.target) {
+                if (zikir33Data.phase < zikir33Phases.length - 1) {
+                    zikir33Data.phase++;
+                    zikir33Data.count = 0;
+                    showNotification(phase.name + ' tamamlandı!');
+                } else {
+                    showNotification('Tüm zikirler tamamlandı!');
+                    zikir33Data = { phase: 0, count: 0 };
                 }
             }
+            
+            saveData('zikir33', zikir33Data);
+            updateZikirDisplay();
         }
 
         function resetZikir33() {
-            if (confirm('Tüm zikirleri sıfırlamak istediğinizden emin misiniz?')) {
-                zikir33 = { estagfir: 0, salli: 0, kelime: 0 };
-                saveData('zikir33', zikir33);
-                updateZikir33();
-                showNotification('Zikirler sıfırlandı!');
+            if (confirm('Zikir sayacını sıfırlamak istediğinizden emin misiniz?')) {
+                zikir33Data = { phase: 0, count: 0 };
+                saveData('zikir33', zikir33Data);
+                updateZikirDisplay();
+                showNotification('Zikir sıfırlandı');
             }
-        }
-
-        function updateIhlas() {
-            const percentage = ((ihlasCount / 40000) * 100).toFixed(1);
-            document.getElementById('ihlas-count').textContent = ihlasCount.toLocaleString();
-            document.getElementById('ihlas-progress').style.width = percentage + '%';
-            document.getElementById('ihlas-progress').textContent = percentage + '%';
         }
 
         function incrementIhlas() {
             ihlasCount++;
             
             if (ihlasCount >= 40000) {
+                showNotification('40.000 İhlas tamamlandı! Sayaç sıfırlanıyor...');
                 ihlasCount = 0;
-                showNotification('40.000 İhlas tamamlandı ve sıfırlandı!');
             }
             
-            saveData('ihlasCount', ihlasCount);
-            updateIhlas();
+            saveData('ihlas', ihlasCount);
+            updateZikirDisplay();
         }
 
-        // Sayfa yüklendiğinde
-        window.onload = function() {
-            updateTransactionStats();
-            renderTransactions();
-            drawPieChart();
-            updateSpendingStats();
-            renderSpending();
-            updateMainZikir();
-            updateTesbih();
-            updateZikir33();
-            updateIhlas();
-        };
+        function updateZikirDisplay() {
+            document.getElementById('free-count').textContent = freeZikir;
+            
+            const tesbihPhase = tesbihPhases[tesbihData.phase];
+            document.getElementById('tesbih-current-name').textContent = tesbihPhase.name;
+            document.getElementById('tesbih-count').textContent = tesbihData.count;
+            document.getElementById('tesbih-label').textContent = tesbihData.count + ' / ' + tesbihPhase.target;
+            document.getElementById('tesbih-progress').style.width = ((tesbihData.count / tesbihPhase.target) * 100) + '%';
+            
+            const zikir33Phase = zikir33Phases[zikir33Data.phase];
+            document.getElementById('zikir33-current-name').textContent = zikir33Phase.name;
+            document.getElementById('zikir33-count').textContent = zikir33Data.count;
+            document.getElementById('zikir33-label').textContent = zikir33Data.count + ' / ' + zikir33Phase.target;
+            document.getElementById('zikir33-progress').style.width = ((zikir33Data.count / zikir33Phase.target) * 100) + '%';
+            
+            document.getElementById('ihlas-count').textContent = ihlasCount.toLocaleString();
+            document.getElementById('ihlas-remaining').textContent = (40000 - ihlasCount).toLocaleString();
+            const ihlasPercent = ((ihlasCount / 40000) * 100).toFixed(1);
+            document.getElementById('ihlas-progress').style.width = ihlasPercent + '%';
+            document.getElementById('ihlas-percent').textContent = ihlasPercent + '%';
+        }
+
+        // ANA PANEL
+        function updateHomePage() {
+            const earnings = loadData('earnings', { dailyWage: 0, workDays: 6, daysOff: 0, extraDays: 0 });
+            const financial = loadData('financialStatus', { earnedSoFar: 0, spentSoFar: 0, plannedExpenses: 0 });
+            const expenses = loadData('expenses', []);
+            
+            const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
+            const actualWorkDays = earnings.workDays - earnings.daysOff + earnings.extraDays;
+            const weeklyEarnings = earnings.dailyWage * actualWorkDays;
+            const remaining = financial.earnedSoFar - financial.spentSoFar;
+            
+            document.getElementById('home-weekly-earnings').textContent = weeklyEarnings.toFixed(0) + '₺';
+            document.getElementById('home-remaining').textContent = remaining.toFixed(0) + '₺';
+            document.getElementById('home-daily-wage').textContent = earnings.dailyWage.toFixed(0) + '₺';
+            document.getElementById('home-earned-so-far').textContent = financial.earnedSoFar.toFixed(0) + '₺';
+            document.getElementById('home-total-spent').textContent = totalExpenses.toFixed(0) + '₺';
+            
+            const adviceContainer = document.getElementById('home-advice');
+            
+            if (remaining > weeklyEarnings * 0.7) {
+                adviceContainer.innerHTML = '<div class="info-box success"><div class="info-title">Mükemmel!</div><div class="info-text">Finansal durumun çok iyi, böyle devam et.</div></div>';
+            } else if (remaining < weeklyEarnings * 0.3) {
+                adviceContainer.innerHTML = '<div class="info-box danger"><div class="info-title">Dikkat!</div><div class="info-text">Harcamalarını kontrol altına al.</div></div>';
+            } else if (earnings.daysOff > 0 && earnings.extraDays === 0) {
+                adviceContainer.innerHTML = '<div class="info-box warning"><div class="info-title">Öneri</div><div class="info-text">İzin günlerini telafi etmek için ekstra çalışma faydalı olabilir.</div></div>';
+            } else {
+                adviceContainer.innerHTML = '<div class="info-box"><div class="info-title">İyi</div><div class="info-text">Dengeli bir durumdasın.</div></div>';
+            }
+        }
+
+        // AYARLAR
+        function resetAllData() {
+            if (confirm('Tüm verileri silmek istediğinizden EMİN MİSİNİZ? Bu işlem geri alınamaz!')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        function resetEarningsData() {
+            if (confirm('Kazanç verilerini sıfırlamak istediğinizden emin misiniz?')) {
+                localStorage.removeItem('earnings');
+                localStorage.removeItem('financialStatus');
+                showNotification('Kazanç verileri sıfırlandı');
+                loadEarningsData();
+            }
+        }
+
+        function resetExpensesData() {
+            if (confirm('Harcama verilerini sıfırlamak istediğinizden emin misiniz?')) {
+                localStorage.removeItem('expenses');
+                expenses = [];
+                showNotification('Harcama verileri sıfırlandı');
+                loadExpensesData();
+            }
+        }
+
+        function resetZikirData() {
+            if (confirm('Zikir verilerini sıfırlamak istediğinizden emin misiniz?')) {
+                localStorage.removeItem('freeZikir');
+                localStorage.removeItem('tesbih');
+                localStorage.removeItem('zikir33');
+                localStorage.removeItem('ihlas');
+                freeZikir = 0;
+                tesbihData = { phase: 0, count: 0 };
+                zikir33Data = { phase: 0, count: 0 };
+                ihlasCount = 0;
+                showNotification('Zikir verileri sıfırlandı');
+                updateZikirDisplay();
+            }
+        }
+
+        // İlk yükleme
+        window.addEventListener('DOMContentLoaded', () => {
+            updateHomePage();
+            loadEarningsData();
+            loadExpensesData();
+            updateZikirDisplay();
+            document.getElementById('expense-date').valueAsDate = new Date();
+        });
     </script>
 </body>
 </html>
