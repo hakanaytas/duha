@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>DUHA</title>
@@ -33,8 +33,6 @@
             background: var(--bg);
             color: var(--text);
             overflow-x: hidden;
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
         }
 
         .header {
@@ -42,15 +40,14 @@
             top: 0;
             left: 0;
             right: 0;
-            height: calc(60px + env(safe-area-inset-top));
+            height: 60px;
             background: var(--bg);
             border-bottom: 1px solid var(--border);
             display: flex;
-            align-items: flex-end;
+            align-items: center;
             justify-content: space-between;
-            padding: 0 20px 15px 20px;
+            padding: 0 20px;
             z-index: 1000;
-            padding-top: env(safe-area-inset-top);
         }
 
         .logo {
@@ -102,7 +99,6 @@
             z-index: 2000;
             transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             overflow-y: auto;
-            padding-top: env(safe-area-inset-top);
         }
 
         .drawer.active {
@@ -170,9 +166,9 @@
         }
 
         .content {
-            margin-top: calc(60px + env(safe-area-inset-top));
+            margin-top: 60px;
             padding: 20px;
-            min-height: calc(100vh - 60px - env(safe-area-inset-top));
+            min-height: calc(100vh - 60px);
         }
 
         .section {
@@ -480,7 +476,7 @@
 
         .notification {
             position: fixed;
-            top: calc(70px + env(safe-area-inset-top));
+            top: 70px;
             left: 20px;
             right: 20px;
             background: var(--primary);
@@ -538,6 +534,38 @@
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 20px;
+        }
+
+        .chart-container {
+            max-width: 300px;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -616,6 +644,23 @@
                 </div>
                 <div class="info-text">
                     <strong>Toplam Harcama:</strong> <span id="home-total-spent">0₺</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Gelir & Gider Dağılımı</div>
+                <div class="chart-container">
+                    <canvas id="homeChart"></canvas>
+                </div>
+                <div class="chart-legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #10b981;"></div>
+                        <span>Gelir</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ef4444;"></div>
+                        <span>Gider</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -846,6 +891,27 @@
             <h1 class="section-title">Ayarlar</h1>
 
             <div class="card">
+                <div class="card-title">Finansal Özet</div>
+                <div class="chart-container">
+                    <canvas id="settingsChart"></canvas>
+                </div>
+                <div class="chart-legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #10b981;"></div>
+                        <span>Kazanılan</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ef4444;"></div>
+                        <span>Harcanan</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #3b82f6;"></div>
+                        <span>Kalan</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
                 <div class="card-title">Veri Yönetimi</div>
                 
                 <button class="btn btn-danger" onclick="resetAllData()">Tüm Verileri Sıfırla</button>
@@ -892,9 +958,13 @@
             document.getElementById(sectionId).classList.add('active');
             toggleDrawer();
             
-            if (sectionId === 'home') updateHomePage();
+            if (sectionId === 'home') {
+                updateHomePage();
+                drawHomeChart();
+            }
             if (sectionId === 'earnings') loadEarningsData();
             if (sectionId === 'expenses') loadExpensesData();
+            if (sectionId === 'settings') drawSettingsChart();
         }
 
         function showNotification(message, duration = 3000) {
@@ -905,6 +975,85 @@
             setTimeout(() => {
                 notification.classList.remove('show');
             }, duration);
+        }
+
+        // Pasta Grafik Çizimi
+        function drawPieChart(canvasId, data) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            canvas.width = 300;
+            canvas.height = 300;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const total = data.reduce((sum, item) => sum + item.value, 0);
+            
+            if (total === 0) {
+                ctx.fillStyle = '#6b7280';
+                ctx.font = '16px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('Veri yok', canvas.width / 2, canvas.height / 2);
+                return;
+            }
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 100;
+            
+            let currentAngle = -Math.PI / 2;
+            
+            data.forEach(item => {
+                const sliceAngle = (item.value / total) * 2 * Math.PI;
+                
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + sliceAngle);
+                ctx.lineTo(centerX, centerY);
+                ctx.fillStyle = item.color;
+                ctx.fill();
+                
+                const textAngle = currentAngle + sliceAngle / 2;
+                const textX = centerX + Math.cos(textAngle) * (radius * 0.65);
+                const textY = centerY + Math.sin(textAngle) * (radius * 0.65);
+                
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(item.label, textX, textY - 8);
+                ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.fillText(item.value.toFixed(0) + '₺', textX, textY + 8);
+                
+                currentAngle += sliceAngle;
+            });
+        }
+
+        function drawHomeChart() {
+            const financial = loadData('financialStatus', { earnedSoFar: 0, spentSoFar: 0 });
+            const expenses = loadData('expenses', []);
+            const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
+            
+            const data = [
+                { label: 'Gelir', value: financial.earnedSoFar, color: '#10b981' },
+                { label: 'Gider', value: totalExpenses, color: '#ef4444' }
+            ];
+            
+            drawPieChart('homeChart', data);
+        }
+
+        function drawSettingsChart() {
+            const financial = loadData('financialStatus', { earnedSoFar: 0, spentSoFar: 0 });
+            const expenses = loadData('expenses', []);
+            const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
+            const remaining = financial.earnedSoFar - totalExpenses;
+            
+            const data = [
+                { label: 'Kazanılan', value: financial.earnedSoFar, color: '#10b981' },
+                { label: 'Harcanan', value: totalExpenses, color: '#ef4444' },
+                { label: 'Kalan', value: remaining > 0 ? remaining : 0, color: '#3b82f6' }
+            ];
+            
+            drawPieChart('settingsChart', data);
         }
 
         // KAZANÇ & YEVMİYE
@@ -1353,6 +1502,7 @@
             loadEarningsData();
             loadExpensesData();
             updateZikirDisplay();
+            drawHomeChart();
             document.getElementById('expense-date').valueAsDate = new Date();
         });
     </script>
