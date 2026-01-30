@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Zikirmatik - Dijital Tesbih</title>
+    <title>Zikirmatik Pro - Dijital Tesbih & Takip</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -21,6 +21,9 @@
             --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
             --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
             --radius: 24px;
+            --danger: #DC2626;
+            --warning: #F59E0B;
+            --success: #10B981;
         }
 
         * {
@@ -39,7 +42,6 @@
             position: relative;
         }
 
-        /* Decorative Background Pattern */
         body::before {
             content: '';
             position: fixed;
@@ -61,17 +63,15 @@
             66% { transform: translate(5%, -5%) rotate(-3deg); }
         }
 
-        /* Header */
         header {
             position: sticky;
             top: 0;
-            background: var(--bg-secondary);
+            background: rgba(255, 255, 255, 0.95);
             border-bottom: 1px solid var(--border);
             padding: 1.25rem 1.5rem;
             z-index: 100;
             box-shadow: var(--shadow-sm);
             backdrop-filter: blur(20px);
-            background: rgba(255, 255, 255, 0.95);
         }
 
         .header-content {
@@ -129,7 +129,6 @@
             transform: rotate(-45deg) translate(6px, -6px);
         }
 
-        /* Main Content */
         main {
             max-width: 600px;
             margin: 0 auto;
@@ -138,10 +137,12 @@
             z-index: 1;
         }
 
-        /* Zikir Display */
-        .zikir-display {
-            text-align: center;
-            margin-bottom: 3rem;
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
             animation: fadeInUp 0.6s ease;
         }
 
@@ -156,6 +157,12 @@
             }
         }
 
+        /* ZIKIR PAGE */
+        .zikir-display {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
         .zikir-name {
             font-family: 'Crimson Pro', serif;
             font-size: 1.75rem;
@@ -164,6 +171,31 @@
             margin-bottom: 1rem;
             line-height: 1.3;
             letter-spacing: -0.01em;
+        }
+
+        .zikir-details {
+            margin-bottom: 1.5rem;
+        }
+
+        .zikir-reading {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 0.75rem;
+            font-style: italic;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .zikir-meaning {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            padding: 1rem;
+            background: rgba(45, 95, 63, 0.05);
+            border-radius: 12px;
         }
 
         .count-display {
@@ -182,7 +214,6 @@
             margin-bottom: 1rem;
         }
 
-        /* Progress Bar */
         .progress-container {
             width: 100%;
             height: 8px;
@@ -206,7 +237,6 @@
             text-align: center;
         }
 
-        /* Counter Button */
         .counter-button {
             width: 220px;
             height: 220px;
@@ -261,7 +291,6 @@
                 0 0 60px var(--accent-glow);
         }
 
-        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -299,7 +328,179 @@
             font-variant-numeric: tabular-nums;
         }
 
-        /* Side Menu */
+        /* CALENDAR PAGE */
+        .calendar-section {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+
+        .calendar-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .countdown-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .countdown-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--bg-primary);
+            border-radius: 12px;
+        }
+
+        .countdown-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .countdown-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--accent);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .countdown-unit {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* MEMORIAL PAGE */
+        .memorial-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .memorial-card {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .memorial-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .memorial-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .memorial-date {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .memorial-elapsed {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .elapsed-item {
+            text-align: center;
+        }
+
+        .elapsed-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .elapsed-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        /* FINANCE PAGE */
+        .job-card {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .job-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .job-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: var(--success);
+            color: white;
+        }
+
+        .job-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .job-stat {
+            background: var(--bg-primary);
+            padding: 1rem;
+            border-radius: 12px;
+        }
+
+        .job-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        /* SIDE MENU */
         .side-menu {
             position: fixed;
             top: 0;
@@ -344,7 +545,6 @@
             padding: 1.5rem;
         }
 
-        /* Menu Sections */
         .menu-section {
             margin-bottom: 2rem;
         }
@@ -358,7 +558,35 @@
             margin-bottom: 1rem;
         }
 
-        /* Zikir List */
+        .menu-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-item {
+            padding: 1rem 1.25rem;
+            background: var(--bg-primary);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 500;
+        }
+
+        .nav-item:hover {
+            border-color: var(--accent-light);
+            transform: translateX(4px);
+        }
+
+        .nav-item.active {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, rgba(45, 95, 63, 0.05), rgba(74, 140, 95, 0.05));
+        }
+
         .zikir-list {
             display: flex;
             flex-direction: column;
@@ -469,7 +697,7 @@
         }
 
         .btn-danger {
-            background: #DC2626;
+            background: var(--danger);
             color: white;
         }
 
@@ -477,8 +705,7 @@
             background: #B91C1C;
         }
 
-        /* Add New Zikir */
-        .add-zikir-form {
+        .add-zikir-form, .add-memorial-form, .add-job-form {
             background: var(--bg-primary);
             padding: 1.25rem;
             border-radius: 12px;
@@ -501,7 +728,7 @@
             margin-bottom: 0.5rem;
         }
 
-        .form-input {
+        .form-input, .form-textarea {
             width: 100%;
             padding: 0.75rem;
             border: 1px solid var(--border);
@@ -513,13 +740,17 @@
             transition: all 0.2s ease;
         }
 
-        .form-input:focus {
+        .form-input:focus, .form-textarea:focus {
             outline: none;
             border-color: var(--accent);
             box-shadow: 0 0 0 3px var(--accent-glow);
         }
 
-        /* Settings */
+        .form-textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
         .settings-list {
             display: flex;
             flex-direction: column;
@@ -540,7 +771,6 @@
             color: var(--text-primary);
         }
 
-        /* Toggle Switch */
         .toggle {
             position: relative;
             width: 48px;
@@ -585,7 +815,6 @@
             transform: translateX(24px);
         }
 
-        /* Modal/Popup */
         .modal {
             display: none;
             position: fixed;
@@ -653,7 +882,6 @@
             flex: 1;
         }
 
-        /* Overlay */
         .overlay {
             display: none;
             position: fixed;
@@ -671,12 +899,10 @@
             display: block;
         }
 
-        /* Search Filter */
         .search-box {
             margin-bottom: 1rem;
         }
 
-        /* Toast Notification */
         .toast {
             position: fixed;
             bottom: 2rem;
@@ -698,7 +924,6 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        /* File Input Custom */
         .file-input-wrapper {
             position: relative;
             overflow: hidden;
@@ -711,7 +936,6 @@
             left: -9999px;
         }
 
-        /* Responsive */
         @media (max-width: 480px) {
             .count-display {
                 font-size: 3.5rem;
@@ -726,35 +950,20 @@
                 font-size: 1.5rem;
             }
 
-            .stats-grid {
+            .stats-grid, .countdown-grid, .job-stats {
                 grid-template-columns: 1fr;
             }
-        }
 
-        /* Loading Animation */
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .loading {
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-
-        /* Ripple Effect */
-        @keyframes ripple {
-            to {
-                transform: scale(4);
-                opacity: 0;
+            .memorial-elapsed {
+                grid-template-columns: repeat(3, 1fr);
             }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header>
         <div class="header-content">
-            <div class="logo">Zikirmatik</div>
+            <div class="logo">Zikirmatik Pro</div>
             <button class="hamburger" id="menuToggle" aria-label="Menü">
                 <span></span>
                 <span></span>
@@ -763,36 +972,178 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <main>
-        <!-- Zikir Display -->
-        <div class="zikir-display">
-            <h1 class="zikir-name" id="currentZikirName">İHLAS-I ŞERİF</h1>
-            <div class="count-display" id="currentCount">0</div>
-            <div class="target-info">
-                Hedef: <span id="currentTarget">40000</span> | 
-                Kalan: <span id="remaining">40000</span>
+        <!-- ZIKIR PAGE -->
+        <div class="page active" id="zikirPage">
+            <div class="zikir-display">
+                <h1 class="zikir-name" id="currentZikirName">İHLAS-I ŞERİF</h1>
+                
+                <div class="zikir-details" id="zikirDetails">
+                    <div class="zikir-reading" id="zikirReading"></div>
+                    <div class="zikir-meaning" id="zikirMeaning"></div>
+                </div>
+                
+                <div class="count-display" id="currentCount">0</div>
+                <div class="target-info">
+                    Hedef: <span id="currentTarget">40000</span> | 
+                    Kalan: <span id="remaining">40000</span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                </div>
+                <div class="progress-text" id="progressText">%0 tamamlandı</div>
             </div>
-            <div class="progress-container">
-                <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+
+            <button class="counter-button" id="counterButton">
+                Zikir Say
+            </button>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Bugün</div>
+                    <div class="stat-value" id="todayCount">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Toplam</div>
+                    <div class="stat-value" id="totalCount">0</div>
+                </div>
             </div>
-            <div class="progress-text" id="progressText">%0 tamamlandı</div>
         </div>
 
-        <!-- Counter Button -->
-        <button class="counter-button" id="counterButton" aria-label="Sayaç Artır">
-            Zikir Say
-        </button>
+        <!-- CALENDAR PAGE -->
+        <div class="page" id="calendarPage">
+            <div class="calendar-section">
+                <h2 class="calendar-title">🌙 İslami Takvim</h2>
+                
+                <div class="calendar-section" style="background: rgba(45, 95, 63, 0.05);">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--accent);">🕌 Üç Aylar</h3>
+                    <div class="countdown-grid">
+                        <div class="countdown-item">
+                            <div class="countdown-label">Başlangıç</div>
+                            <div style="font-size: 0.9rem; color: var(--text-primary); margin-top: 0.5rem;">
+                                <span id="threeMonthsStart">-</span>
+                            </div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="countdown-label">Bitiş</div>
+                            <div style="font-size: 0.9rem; color: var(--text-primary); margin-top: 0.5rem;">
+                                <span id="threeMonthsEnd">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 1rem; padding: 1rem; background: var(--bg-secondary); border-radius: 12px;">
+                        <div class="countdown-label">Durum</div>
+                        <div id="threeMonthsStatus" style="font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-top: 0.5rem;">-</div>
+                    </div>
+                </div>
 
-        <!-- Stats Grid -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-label">Bugün</div>
-                <div class="stat-value" id="todayCount">0</div>
+                <div class="calendar-section">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--accent);">🌟 Ramazan</h3>
+                    <div class="countdown-grid">
+                        <div class="countdown-item">
+                            <div class="countdown-label">Gün</div>
+                            <div class="countdown-value" id="ramadanDays">-</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="countdown-label">Ay</div>
+                            <div class="countdown-value" id="ramadanMonths">-</div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary);">
+                        Başlangıç: <span id="ramadanStartDate">-</span>
+                    </div>
+                </div>
+
+                <div class="calendar-section">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--accent);">🕋 Ramazan Bayramı</h3>
+                    <div class="countdown-grid">
+                        <div class="countdown-item">
+                            <div class="countdown-label">Gün</div>
+                            <div class="countdown-value" id="eidFitrDays">-</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="countdown-label">Ay</div>
+                            <div class="countdown-value" id="eidFitrMonths">-</div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary);">
+                        Tarih: <span id="eidFitrDate">-</span>
+                    </div>
+                </div>
+
+                <div class="calendar-section">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--accent);">🐑 Kurban Bayramı</h3>
+                    <div class="countdown-grid">
+                        <div class="countdown-item">
+                            <div class="countdown-label">Gün</div>
+                            <div class="countdown-value" id="eidAdahDays">-</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="countdown-label">Ay</div>
+                            <div class="countdown-value" id="eidAdahMonths">-</div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary);">
+                        Tarih: <span id="eidAdahDate">-</span>
+                    </div>
+                </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-label">Toplam</div>
-                <div class="stat-value" id="totalCount">0</div>
+        </div>
+
+        <!-- MEMORIAL PAGE -->
+        <div class="page" id="memorialPage">
+            <div class="calendar-section">
+                <h2 class="calendar-title">🕊️ Vefat Sayacı</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Sevdiklerinizi anmak için vefat tarihlerini kaydedin.</p>
+                
+                <div class="memorial-list" id="memorialList"></div>
+
+                <div class="add-memorial-form" style="margin-top: 1.5rem;">
+                    <div class="form-group">
+                        <label class="form-label">İsim</label>
+                        <input type="text" class="form-input" id="memorialName" placeholder="Örn: Annem">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Vefat Tarihi</label>
+                        <input type="datetime-local" class="form-input" id="memorialDate">
+                    </div>
+                    <button class="btn btn-primary" id="addMemorialBtn" style="width: 100%;">Ekle</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- FINANCE PAGE -->
+        <div class="page" id="financePage">
+            <div class="calendar-section">
+                <h2 class="calendar-title">💰 Gelir Takibi</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">İşlerinizi ve kazancınızı takip edin.</p>
+                
+                <div id="jobsList"></div>
+
+                <div class="add-job-form" style="margin-top: 1.5rem;">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">Yeni İş Ekle</h3>
+                    <div class="form-group">
+                        <label class="form-label">İş Adı</label>
+                        <input type="text" class="form-input" id="jobName" placeholder="Örn: Kafe Garsonluğu">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Günlük Kazanç (₺)</label>
+                        <input type="number" class="form-input" id="jobDailyPay" placeholder="500">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Haftalık Çalışma Günü</label>
+                        <input type="number" class="form-input" id="jobWorkDays" placeholder="6" min="1" max="7">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">İşe Başlama Tarihi</label>
+                        <input type="date" class="form-input" id="jobStartDate">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Hedef Birikim (₺) - İsteğe Bağlı</label>
+                        <input type="number" class="form-input" id="jobSavingGoal" placeholder="10000">
+                    </div>
+                    <button class="btn btn-primary" id="addJobBtn" style="width: 100%;">İş Ekle</button>
+                </div>
             </div>
         </div>
     </main>
@@ -800,23 +1151,42 @@
     <!-- Side Menu -->
     <div class="side-menu" id="sideMenu">
         <div class="menu-header">
-            <h2 class="menu-title">Zikirlerim</h2>
-            <p class="menu-subtitle">Tüm zikirlerinizi yönetin</p>
+            <h2 class="menu-title">Menü</h2>
+            <p class="menu-subtitle">Tüm özelliklere buradan ulaşın</p>
         </div>
         <div class="menu-content">
-            <!-- Search -->
+            <!-- Navigation -->
             <div class="menu-section">
-                <input type="text" class="form-input search-box" id="searchBox" placeholder="🔍 Zikir ara...">
+                <h3 class="section-title">Sayfalar</h3>
+                <div class="menu-nav">
+                    <div class="nav-item active" data-page="zikirPage">
+                        <span>📿</span>
+                        <span>Zikirmatik</span>
+                    </div>
+                    <div class="nav-item" data-page="calendarPage">
+                        <span>📅</span>
+                        <span>İslami Takvim</span>
+                    </div>
+                    <div class="nav-item" data-page="memorialPage">
+                        <span>🕊️</span>
+                        <span>Vefat Sayacı</span>
+                    </div>
+                    <div class="nav-item" data-page="financePage">
+                        <span>💰</span>
+                        <span>Gelir Takibi</span>
+                    </div>
+                </div>
             </div>
 
-            <!-- Zikir List -->
-            <div class="menu-section">
-                <h3 class="section-title">Kayıtlı Zikirler</h3>
+            <!-- Zikir List (only shown when on zikir page) -->
+            <div class="menu-section" id="zikirListSection">
+                <h3 class="section-title">Zikirlerim</h3>
+                <input type="text" class="form-input search-box" id="searchBox" placeholder="🔍 Zikir ara...">
                 <div class="zikir-list" id="zikirList"></div>
             </div>
 
             <!-- Add New Zikir -->
-            <div class="menu-section">
+            <div class="menu-section" id="addZikirSection">
                 <h3 class="section-title">Yeni Zikir Ekle</h3>
                 <div class="add-zikir-form">
                     <div class="form-group">
@@ -825,7 +1195,15 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Hedef Sayı</label>
-                        <input type="number" class="form-input" id="newZikirTarget" placeholder="Örn: 1000" value="1000">
+                        <input type="number" class="form-input" id="newZikirTarget" placeholder="1000" value="1000">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Okunuşu (İsteğe Bağlı)</label>
+                        <textarea class="form-input" id="newZikirReading" placeholder="Türkçe okunuş..." rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Anlamı (İsteğe Bağlı)</label>
+                        <textarea class="form-input" id="newZikirMeaning" placeholder="Türkçe anlamı..." rows="2"></textarea>
                     </div>
                     <button class="btn btn-primary" id="addZikirBtn" style="width: 100%;">Ekle</button>
                 </div>
@@ -835,13 +1213,6 @@
             <div class="menu-section">
                 <h3 class="section-title">Ayarlar</h3>
                 <div class="settings-list">
-                    <div class="setting-item">
-                        <span class="setting-label">Ses Efekti</span>
-                        <label class="toggle">
-                            <input type="checkbox" id="soundToggle" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
                     <div class="setting-item">
                         <span class="setting-label">Titreşim</span>
                         <label class="toggle">
@@ -867,10 +1238,8 @@
         </div>
     </div>
 
-    <!-- Overlay -->
     <div class="overlay" id="overlay"></div>
 
-    <!-- Confirmation Modal -->
     <div class="modal" id="confirmModal">
         <div class="modal-content">
             <h3 class="modal-title" id="modalTitle">Emin misiniz?</h3>
@@ -882,20 +1251,17 @@
         </div>
     </div>
 
-    <!-- Toast Notification -->
     <div class="toast" id="toast"></div>
 
     <script>
-        // ============================================
-        // ZİKİRMATİK APP - COMPLETE IMPLEMENTATION
-        // ============================================
-
         class ZikirmatikApp {
             constructor() {
+                this.currentPage = 'zikirPage';
                 this.currentZikirId = null;
                 this.zikirler = [];
+                this.memorials = [];
+                this.jobs = [];
                 this.settings = {
-                    sound: true,
                     vibration: true
                 };
                 this.dailyStats = {};
@@ -903,30 +1269,45 @@
                 this.init();
             }
 
-            // ========== INITIALIZATION ==========
             init() {
                 this.loadData();
                 this.setupEventListeners();
                 this.updateUI();
                 this.updateStats();
+                this.updateCalendar();
+                this.updateMemorials();
+                this.updateJobs();
+                
+                // Update memorials every minute
+                setInterval(() => {
+                    this.updateMemorials();
+                }, 60000);
+
+                // Update calendar every hour
+                setInterval(() => {
+                    this.updateCalendar();
+                }, 3600000);
+
+                // Update jobs every day
+                setInterval(() => {
+                    this.updateJobs();
+                }, 86400000);
             }
 
-            // ========== DATA MANAGEMENT ==========
             loadData() {
-                // Load zikirler from localStorage
-                const saved = localStorage.getItem('zikirmatik_data');
+                const saved = localStorage.getItem('zikirmatik_pro_data');
                 if (saved) {
                     const data = JSON.parse(saved);
                     this.zikirler = data.zikirler || [];
+                    this.memorials = data.memorials || [];
+                    this.jobs = data.jobs || [];
                     this.currentZikirId = data.currentZikirId || null;
                     this.settings = data.settings || this.settings;
                     this.dailyStats = data.dailyStats || {};
                 } else {
-                    // İlk kurulum - varsayılan zikirler
                     this.initializeDefaultZikirler();
                 }
 
-                // Eğer currentZikirId yoksa veya geçersizse, ilk zikri seç
                 if (!this.currentZikirId || !this.zikirler.find(z => z.id === this.currentZikirId)) {
                     this.currentZikirId = this.zikirler.length > 0 ? this.zikirler[0].id : null;
                 }
@@ -936,21 +1317,63 @@
 
             initializeDefaultZikirler() {
                 const defaults = [
-                    { name: 'İHLAS-I ŞERİF', target: 40000 },
-                    { name: 'NAMAZ SONRASI 33 SUBHANALLAH', target: 33 },
-                    { name: 'NAMAZ SONRASI 33 ELHAMDÜLİLLAH', target: 33 },
-                    { name: 'NAMAZ SONRASI 34 ALLAHU EKBER', target: 34 },
-                    { name: 'ESTAĞFİRULLAH', target: 100 },
-                    { name: 'LA İLAHE İLLALLAH', target: 100 },
-                    { name: 'ALLAHÜMME SALLİ ALA SEYYİDİNA MUHAMMED', target: 100 },
-                    { name: 'AYETÜL KÜRSİ', target: 100 }
+                    { 
+                        name: 'İHLAS-I ŞERİF', 
+                        target: 40000,
+                        reading: 'Kul huvallahu ehad. Allahus-samed. Lem yelid ve lem yuled. Ve lem yekün lehu küfüven ehad.',
+                        meaning: 'De ki: O Allah birdir. Allah Samed\'dir (her şey O\'na muhtaçtır, O hiçbir şeye muhtaç değildir). O doğurmamıştır ve doğmamıştır. Hiçbir şey O\'na denk ve benzer değildir.'
+                    },
+                    { 
+                        name: 'NAMAZ SONRASI 33 SUBHANALLAH', 
+                        target: 33,
+                        reading: 'Sübhanallah',
+                        meaning: 'Allah noksan sıfatlardan münezzehtir, her türlü eksiklikten uzaktır.'
+                    },
+                    { 
+                        name: 'NAMAZ SONRASI 33 ELHAMDÜLİLLAH', 
+                        target: 33,
+                        reading: 'Elhamdülillah',
+                        meaning: 'Hamd, övgü ve şükür yalnızca Allah\'a mahsustur.'
+                    },
+                    { 
+                        name: 'NAMAZ SONRASI 34 ALLAHU EKBER', 
+                        target: 34,
+                        reading: 'Allahu Ekber',
+                        meaning: 'Allah en büyüktür, her şeyden üstündür.'
+                    },
+                    { 
+                        name: 'ESTAĞFİRULLAH', 
+                        target: 100,
+                        reading: 'Estağfirullah',
+                        meaning: 'Allah\'tan bağışlanma dilerim, günahlarımın affedilmesini niyaz ederim.'
+                    },
+                    { 
+                        name: 'LA İLAHE İLLALLAH', 
+                        target: 100,
+                        reading: 'La ilahe illallah',
+                        meaning: 'Allah\'tan başka ilah yoktur, yalnızca O\'na ibadet edilir.'
+                    },
+                    { 
+                        name: 'ALLAHÜMME SALLİ ALA SEYYİDİNA MUHAMMED', 
+                        target: 100,
+                        reading: 'Allahümme salli ala seyyidina Muhammedin ve ala ali seyyidina Muhammed',
+                        meaning: 'Allah\'ım, efendimiz Hz. Muhammed\'e ve âline salât-ü selam eyle.'
+                    },
+                    { 
+                        name: 'AYETÜL KÜRSİ', 
+                        target: 100,
+                        reading: 'Allahu la ilahe illa hüvel hayyül kayyum. La te\'huzühü sinetüv vela nevm. Lehu ma fis semavati vema fil ard. Men zellezi yeşfeu indehü illa bi iznih. Ya\'lemu ma beyne eydihim vema halfehüm. Vela yuhitune bi şey\'im min ilmihi illa bima şa\'e. Vesia kürsiyyühüs semavati vel ard. Vela yeüdühü hıfzuhüma ve hüvel aliyyül azim.',
+                        meaning: 'Allah ki O\'ndan başka ilah yoktur. Diri\'dir, Kayyum\'dur (her şeyi varlıkta tutan). O\'nu ne uyuklama tutar ne de uyku. Göklerde ve yerde ne varsa hepsi O\'nundur. İzni olmadan katında kim şefaat edebilir? Kulların önlerindekini ve arkalarındakini bilir. O\'nun ilminden, kendisinin dilediği kadarından başkasını ihata edemezler. O\'nun kürsüsü gökleri ve yeri kaplayıp kuşatmıştır. Onları koruyup gözetmek O\'na güç gelmez. O, Aliyy\'dir (en yüce), Azîm\'dir (en büyük).'
+                    }
                 ];
 
-                this.zikirler = defaults.map((z, index) => ({
+                this.zikirler = defaults.map(z => ({
                     id: this.generateId(),
                     name: z.name,
                     count: 0,
                     target: z.target,
+                    reading: z.reading || '',
+                    meaning: z.meaning || '',
                     createdAt: Date.now()
                 }));
 
@@ -961,26 +1384,26 @@
             saveData() {
                 const data = {
                     zikirler: this.zikirler,
+                    memorials: this.memorials,
+                    jobs: this.jobs,
                     currentZikirId: this.currentZikirId,
                     settings: this.settings,
                     dailyStats: this.dailyStats,
                     lastUpdate: Date.now()
                 };
-                localStorage.setItem('zikirmatik_data', JSON.stringify(data));
+                localStorage.setItem('zikirmatik_pro_data', JSON.stringify(data));
             }
 
             generateId() {
                 return Date.now().toString(36) + Math.random().toString(36).substr(2);
             }
 
-            // ========== DAILY STATS MANAGEMENT ==========
             getTodayKey() {
                 const today = new Date();
                 return `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
             }
 
             cleanOldDailyStats() {
-                // Son 30 günden eski istatistikleri temizle
                 const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
                 const keys = Object.keys(this.dailyStats);
                 
@@ -1006,7 +1429,7 @@
                 return this.dailyStats[today] || 0;
             }
 
-            // ========== ZIKIR OPERATIONS ==========
+            // ZIKIR OPERATIONS
             getCurrentZikir() {
                 return this.zikirler.find(z => z.id === this.currentZikirId);
             }
@@ -1017,13 +1440,7 @@
 
                 zikir.count++;
                 this.incrementDailyCount();
-                
-                // Ses çal
-                if (this.settings.sound) {
-                    this.playSound();
-                }
 
-                // Titreşim
                 if (this.settings.vibration && navigator.vibrate) {
                     navigator.vibrate(50);
                 }
@@ -1032,13 +1449,12 @@
                 this.updateUI();
                 this.updateStats();
 
-                // Hedef tamamlandıysa tebrik göster
                 if (zikir.count === zikir.target) {
                     this.showToast(`🎉 ${zikir.name} hedefini tamamladınız!`);
                 }
             }
 
-            addZikir(name, target) {
+            addZikir(name, target, reading = '', meaning = '') {
                 if (!name.trim()) {
                     this.showToast('⚠️ Zikir adı boş olamaz!');
                     return;
@@ -1049,6 +1465,8 @@
                     name: name.trim().toUpperCase(),
                     count: 0,
                     target: parseInt(target) || 1000,
+                    reading: reading.trim(),
+                    meaning: meaning.trim(),
                     createdAt: Date.now()
                 };
 
@@ -1057,9 +1475,10 @@
                 this.renderZikirList();
                 this.showToast('✅ Yeni zikir eklendi!');
 
-                // Form temizle
                 document.getElementById('newZikirName').value = '';
                 document.getElementById('newZikirTarget').value = '1000';
+                document.getElementById('newZikirReading').value = '';
+                document.getElementById('newZikirMeaning').value = '';
             }
 
             deleteZikir(id) {
@@ -1068,11 +1487,10 @@
 
                 this.showConfirmModal(
                     'Zikri Sil',
-                    `"${zikir.name}" adlı zikri silmek istediğinize emin misiniz? Bu işlem geri alınamaz.`,
+                    `"${zikir.name}" adlı zikri silmek istediğinize emin misiniz?`,
                     () => {
                         this.zikirler = this.zikirler.filter(z => z.id !== id);
                         
-                        // Silinen zikir aktifse, başka bir zikri aktif yap
                         if (this.currentZikirId === id) {
                             this.currentZikirId = this.zikirler.length > 0 ? this.zikirler[0].id : null;
                         }
@@ -1107,12 +1525,9 @@
                 this.saveData();
                 this.updateUI();
                 this.renderZikirList();
-                
-                // Menüyü kapat
                 this.closeMenu();
             }
 
-            // ========== UI UPDATES ==========
             updateUI() {
                 const zikir = this.getCurrentZikir();
                 if (!zikir) {
@@ -1122,12 +1537,31 @@
                     document.getElementById('remaining').textContent = '0';
                     document.getElementById('progressBar').style.width = '0%';
                     document.getElementById('progressText').textContent = '%0 tamamlandı';
+                    document.getElementById('zikirReading').textContent = '';
+                    document.getElementById('zikirMeaning').textContent = '';
                     return;
                 }
 
                 document.getElementById('currentZikirName').textContent = zikir.name;
                 document.getElementById('currentCount').textContent = zikir.count.toLocaleString('tr-TR');
                 document.getElementById('currentTarget').textContent = zikir.target.toLocaleString('tr-TR');
+                
+                const readingEl = document.getElementById('zikirReading');
+                const meaningEl = document.getElementById('zikirMeaning');
+                
+                if (zikir.reading) {
+                    readingEl.textContent = '📖 ' + zikir.reading;
+                    readingEl.style.display = 'block';
+                } else {
+                    readingEl.style.display = 'none';
+                }
+                
+                if (zikir.meaning) {
+                    meaningEl.textContent = '💭 ' + zikir.meaning;
+                    meaningEl.style.display = 'block';
+                } else {
+                    meaningEl.style.display = 'none';
+                }
                 
                 const remaining = Math.max(0, zikir.target - zikir.count);
                 document.getElementById('remaining').textContent = remaining.toLocaleString('tr-TR');
@@ -1153,7 +1587,6 @@
                     z.name.toLowerCase().includes(searchTerm)
                 );
 
-                // Sırala: Aktif zikir en üstte, sonra isme göre
                 filtered.sort((a, b) => {
                     if (a.id === this.currentZikirId) return -1;
                     if (b.id === this.currentZikirId) return 1;
@@ -1185,7 +1618,6 @@
                     `;
                 }).join('');
 
-                // Event listeners
                 container.querySelectorAll('.select-zikir').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         e.stopPropagation();
@@ -1207,7 +1639,6 @@
                     });
                 });
 
-                // Tıklayarak seçme
                 container.querySelectorAll('.zikir-item').forEach(item => {
                     item.addEventListener('click', () => {
                         this.selectZikir(item.dataset.id);
@@ -1215,7 +1646,314 @@
                 });
             }
 
-            // ========== MENU CONTROLS ==========
+            // CALENDAR FUNCTIONS
+            updateCalendar() {
+                // 2026 İslami önemli günler (tahmini)
+                const threeMonthsStart = new Date('2026-02-11'); // Recep 1
+                const threeMonthsEnd = new Date('2026-05-11'); // Ramazan 30
+                const ramadanStart = new Date('2026-04-13'); // Ramazan 1
+                const eidFitr = new Date('2026-05-13'); // Şevval 1 (Ramazan Bayramı)
+                const eidAdha = new Date('2026-07-20'); // Zilhicce 10 (Kurban Bayramı)
+
+                const now = new Date();
+
+                // Üç Aylar
+                document.getElementById('threeMonthsStart').textContent = this.formatDate(threeMonthsStart);
+                document.getElementById('threeMonthsEnd').textContent = this.formatDate(threeMonthsEnd);
+                
+                if (now < threeMonthsStart) {
+                    const days = Math.ceil((threeMonthsStart - now) / (1000 * 60 * 60 * 24));
+                    document.getElementById('threeMonthsStatus').textContent = `${days} gün sonra başlayacak`;
+                } else if (now >= threeMonthsStart && now <= threeMonthsEnd) {
+                    document.getElementById('threeMonthsStatus').textContent = 'Üç Aylar devam ediyor 🌙';
+                } else {
+                    document.getElementById('threeMonthsStatus').textContent = 'Sona erdi';
+                }
+
+                // Ramazan
+                const ramadanDiff = this.getDateDifference(now, ramadanStart);
+                document.getElementById('ramadanDays').textContent = ramadanDiff.days;
+                document.getElementById('ramadanMonths').textContent = ramadanDiff.months;
+                document.getElementById('ramadanStartDate').textContent = this.formatDate(ramadanStart);
+
+                // Ramazan Bayramı
+                const eidFitrDiff = this.getDateDifference(now, eidFitr);
+                document.getElementById('eidFitrDays').textContent = eidFitrDiff.days;
+                document.getElementById('eidFitrMonths').textContent = eidFitrDiff.months;
+                document.getElementById('eidFitrDate').textContent = this.formatDate(eidFitr);
+
+                // Kurban Bayramı
+                const eidAdhaDiff = this.getDateDifference(now, eidAdha);
+                document.getElementById('eidAdahDays').textContent = eidAdhaDiff.days;
+                document.getElementById('eidAdahMonths').textContent = eidAdhaDiff.months;
+                document.getElementById('eidAdahDate').textContent = this.formatDate(eidAdha);
+            }
+
+            getDateDifference(from, to) {
+                const diff = to - from;
+                const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+                const months = Math.floor(days / 30);
+                const remainingDays = days % 30;
+
+                return {
+                    days: remainingDays,
+                    months: months
+                };
+            }
+
+            formatDate(date) {
+                return date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+            }
+
+            // MEMORIAL FUNCTIONS
+            addMemorial(name, dateTime) {
+                if (!name.trim() || !dateTime) {
+                    this.showToast('⚠️ İsim ve tarih gerekli!');
+                    return;
+                }
+
+                const memorial = {
+                    id: this.generateId(),
+                    name: name.trim(),
+                    date: new Date(dateTime).getTime(),
+                    createdAt: Date.now()
+                };
+
+                this.memorials.push(memorial);
+                this.saveData();
+                this.updateMemorials();
+                this.showToast('✅ Vefat kaydı eklendi');
+
+                document.getElementById('memorialName').value = '';
+                document.getElementById('memorialDate').value = '';
+            }
+
+            deleteMemorial(id) {
+                this.showConfirmModal(
+                    'Kaydı Sil',
+                    'Bu vefat kaydını silmek istediğinize emin misiniz?',
+                    () => {
+                        this.memorials = this.memorials.filter(m => m.id !== id);
+                        this.saveData();
+                        this.updateMemorials();
+                        this.showToast('🗑️ Kayıt silindi');
+                    }
+                );
+            }
+
+            updateMemorials() {
+                const container = document.getElementById('memorialList');
+                const now = Date.now();
+
+                if (this.memorials.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">Henüz vefat kaydı eklenmemiş.</p>';
+                    return;
+                }
+
+                container.innerHTML = this.memorials.map(memorial => {
+                    const elapsed = this.getElapsedTime(memorial.date, now);
+                    
+                    return `
+                        <div class="memorial-card">
+                            <div class="memorial-header">
+                                <div class="memorial-name">${memorial.name}</div>
+                                <button class="btn btn-small btn-danger" onclick="app.deleteMemorial('${memorial.id}')">Sil</button>
+                            </div>
+                            <div class="memorial-date">📅 ${this.formatDate(new Date(memorial.date))}</div>
+                            <div class="memorial-elapsed">
+                                <div class="elapsed-item">
+                                    <div class="elapsed-value">${elapsed.years}</div>
+                                    <div class="elapsed-label">Yıl</div>
+                                </div>
+                                <div class="elapsed-item">
+                                    <div class="elapsed-value">${elapsed.months}</div>
+                                    <div class="elapsed-label">Ay</div>
+                                </div>
+                                <div class="elapsed-item">
+                                    <div class="elapsed-value">${elapsed.days}</div>
+                                    <div class="elapsed-label">Gün</div>
+                                </div>
+                                <div class="elapsed-item">
+                                    <div class="elapsed-value">${elapsed.hours}</div>
+                                    <div class="elapsed-label">Saat</div>
+                                </div>
+                                <div class="elapsed-item">
+                                    <div class="elapsed-value">${elapsed.minutes}</div>
+                                    <div class="elapsed-label">Dakika</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            getElapsedTime(from, to) {
+                const diff = to - from;
+                
+                const minutes = Math.floor(diff / (1000 * 60));
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const months = Math.floor(days / 30);
+                const years = Math.floor(days / 365);
+
+                return {
+                    years: years,
+                    months: months % 12,
+                    days: days % 30,
+                    hours: hours % 24,
+                    minutes: minutes % 60
+                };
+            }
+
+            // FINANCE FUNCTIONS
+            addJob(name, dailyPay, workDays, startDate, savingGoal = 0) {
+                if (!name.trim() || !dailyPay || !workDays || !startDate) {
+                    this.showToast('⚠️ Tüm alanları doldurun!');
+                    return;
+                }
+
+                const job = {
+                    id: this.generateId(),
+                    name: name.trim(),
+                    dailyPay: parseFloat(dailyPay),
+                    workDays: parseInt(workDays),
+                    startDate: new Date(startDate).getTime(),
+                    savingGoal: parseFloat(savingGoal) || 0,
+                    createdAt: Date.now()
+                };
+
+                this.jobs.push(job);
+                this.saveData();
+                this.updateJobs();
+                this.showToast('✅ İş eklendi!');
+
+                document.getElementById('jobName').value = '';
+                document.getElementById('jobDailyPay').value = '';
+                document.getElementById('jobWorkDays').value = '';
+                document.getElementById('jobStartDate').value = '';
+                document.getElementById('jobSavingGoal').value = '';
+            }
+
+            deleteJob(id) {
+                this.showConfirmModal(
+                    'İşi Sil',
+                    'Bu iş kaydını silmek istediğinize emin misiniz?',
+                    () => {
+                        this.jobs = this.jobs.filter(j => j.id !== id);
+                        this.saveData();
+                        this.updateJobs();
+                        this.showToast('🗑️ İş silindi');
+                    }
+                );
+            }
+
+            updateJobs() {
+                const container = document.getElementById('jobsList');
+
+                if (this.jobs.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">Henüz iş eklenmemiş.</p>';
+                    return;
+                }
+
+                container.innerHTML = this.jobs.map(job => {
+                    const stats = this.calculateJobStats(job);
+                    
+                    return `
+                        <div class="job-card">
+                            <div class="job-header">
+                                <div class="job-name">${job.name}</div>
+                                <div class="job-status">Aktif</div>
+                            </div>
+                            <div style="margin: 1rem 0; padding: 1rem; background: var(--bg-primary); border-radius: 12px;">
+                                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Toplam Kazanç</div>
+                                <div style="font-size: 2rem; font-weight: 700; color: var(--accent);">${stats.totalEarned.toLocaleString('tr-TR')} ₺</div>
+                                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                                    ${stats.daysWorked} gün çalıştınız
+                                </div>
+                            </div>
+                            <div class="job-stats">
+                                <div class="job-stat">
+                                    <div class="job-stat-label">Günlük Kazanç</div>
+                                    <div class="job-stat-value">${job.dailyPay.toLocaleString('tr-TR')} ₺</div>
+                                </div>
+                                <div class="job-stat">
+                                    <div class="job-stat-label">Haftalık</div>
+                                    <div class="job-stat-value">${(job.dailyPay * job.workDays).toLocaleString('tr-TR')} ₺</div>
+                                </div>
+                                <div class="job-stat">
+                                    <div class="job-stat-label">Aylık (Tahmini)</div>
+                                    <div class="job-stat-value">${(job.dailyPay * job.workDays * 4).toLocaleString('tr-TR')} ₺</div>
+                                </div>
+                                <div class="job-stat">
+                                    <div class="job-stat-label">Çalışma Günü</div>
+                                    <div class="job-stat-value">${job.workDays}/7</div>
+                                </div>
+                            </div>
+                            ${job.savingGoal > 0 ? `
+                                <div style="margin-top: 1rem; padding: 1rem; background: rgba(45, 95, 63, 0.05); border-radius: 12px;">
+                                    <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Hedef Birikim: ${job.savingGoal.toLocaleString('tr-TR')} ₺</div>
+                                    <div class="progress-container">
+                                        <div class="progress-bar" style="width: ${Math.min(100, (stats.totalEarned / job.savingGoal) * 100)}%"></div>
+                                    </div>
+                                    <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem; text-align: center;">
+                                        ${stats.daysToGoal > 0 ? `Hedefe ${stats.daysToGoal} gün kaldı` : 'Hedef tamamlandı! 🎉'}
+                                    </div>
+                                </div>
+                            ` : ''}
+                            <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                                <button class="btn btn-danger btn-small" onclick="app.deleteJob('${job.id}')" style="flex: 1;">İşi Sil</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            calculateJobStats(job) {
+                const now = Date.now();
+                const startDate = job.startDate;
+                const daysPassed = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+                
+                // Hafta bazında çalışma günü hesaplama
+                const weeks = Math.floor(daysPassed / 7);
+                const remainingDays = daysPassed % 7;
+                const daysWorked = (weeks * job.workDays) + Math.min(remainingDays, job.workDays);
+                
+                const totalEarned = daysWorked * job.dailyPay;
+                
+                const daysToGoal = job.savingGoal > 0 
+                    ? Math.max(0, Math.ceil((job.savingGoal - totalEarned) / job.dailyPay))
+                    : 0;
+
+                return {
+                    daysWorked,
+                    totalEarned,
+                    daysToGoal
+                };
+            }
+
+            // PAGE NAVIGATION
+            switchPage(pageId) {
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById(pageId).classList.add('active');
+                
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
+                
+                this.currentPage = pageId;
+
+                // Show/hide zikir sections in menu
+                const zikirSections = ['zikirListSection', 'addZikirSection'];
+                zikirSections.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.style.display = pageId === 'zikirPage' ? 'block' : 'none';
+                    }
+                });
+
+                this.closeMenu();
+            }
+
+            // MENU
             toggleMenu() {
                 const menu = document.getElementById('sideMenu');
                 const overlay = document.getElementById('overlay');
@@ -1225,7 +1963,7 @@
                 overlay.classList.toggle('active');
                 hamburger.classList.toggle('active');
 
-                if (menu.classList.contains('active')) {
+                if (menu.classList.contains('active') && this.currentPage === 'zikirPage') {
                     this.renderZikirList();
                 }
             }
@@ -1236,7 +1974,7 @@
                 document.getElementById('menuToggle').classList.remove('active');
             }
 
-            // ========== MODAL & TOAST ==========
+            // MODAL & TOAST
             showConfirmModal(title, text, onConfirm) {
                 const modal = document.getElementById('confirmModal');
                 document.getElementById('modalTitle').textContent = title;
@@ -1277,21 +2015,23 @@
                 }, 3000);
             }
 
-            // ========== DATA IMPORT/EXPORT ==========
+            // DATA IMPORT/EXPORT
             exportData() {
                 const data = {
                     zikirler: this.zikirler,
+                    memorials: this.memorials,
+                    jobs: this.jobs,
                     settings: this.settings,
                     dailyStats: this.dailyStats,
                     exportDate: new Date().toISOString(),
-                    version: '1.0'
+                    version: '2.0'
                 };
 
                 const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `zikirmatik-yedek-${Date.now()}.json`;
+                a.download = `zikirmatik-pro-yedek-${Date.now()}.json`;
                 a.click();
                 URL.revokeObjectURL(url);
 
@@ -1304,11 +2044,9 @@
                     try {
                         const data = JSON.parse(e.target.result);
                         
-                        if (!data.zikirler || !Array.isArray(data.zikirler)) {
-                            throw new Error('Geçersiz dosya formatı');
-                        }
-
-                        this.zikirler = data.zikirler;
+                        this.zikirler = data.zikirler || [];
+                        this.memorials = data.memorials || [];
+                        this.jobs = data.jobs || [];
                         this.settings = data.settings || this.settings;
                         this.dailyStats = data.dailyStats || {};
                         
@@ -1319,6 +2057,9 @@
                         this.saveData();
                         this.updateUI();
                         this.updateStats();
+                        this.updateCalendar();
+                        this.updateMemorials();
+                        this.updateJobs();
                         this.renderZikirList();
                         this.showToast('📤 Veriler içe aktarıldı!');
                     } catch (error) {
@@ -1331,45 +2072,26 @@
             resetAllData() {
                 this.showConfirmModal(
                     'Tüm Verileri Sıfırla',
-                    'TÜM zikirleriniz ve istatistikleriniz silinecek. Bu işlem geri alınamaz!',
+                    'TÜM verileriniz silinecek. Bu işlem geri alınamaz!',
                     () => {
-                        localStorage.removeItem('zikirmatik_data');
+                        localStorage.removeItem('zikirmatik_pro_data');
                         this.zikirler = [];
+                        this.memorials = [];
+                        this.jobs = [];
                         this.dailyStats = {};
                         this.initializeDefaultZikirler();
                         this.updateUI();
                         this.updateStats();
+                        this.updateCalendar();
+                        this.updateMemorials();
+                        this.updateJobs();
                         this.renderZikirList();
                         this.showToast('🗑️ Tüm veriler sıfırlandı!');
                     }
                 );
             }
 
-            // ========== SOUND ==========
-            playSound() {
-                // Web Audio API ile basit beep sesi
-                try {
-                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    const oscillator = audioContext.createOscillator();
-                    const gainNode = audioContext.createGain();
-
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioContext.destination);
-
-                    oscillator.frequency.value = 800;
-                    oscillator.type = 'sine';
-                    
-                    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-
-                    oscillator.start(audioContext.currentTime);
-                    oscillator.stop(audioContext.currentTime + 0.1);
-                } catch (e) {
-                    // Ses çalınamazsa sessizce devam et
-                }
-            }
-
-            // ========== EVENT LISTENERS ==========
+            // EVENT LISTENERS
             setupEventListeners() {
                 // Counter button
                 document.getElementById('counterButton').addEventListener('click', () => {
@@ -1381,19 +2103,27 @@
                     this.toggleMenu();
                 });
 
-                // Overlay (menü dışına tıklama)
                 document.getElementById('overlay').addEventListener('click', () => {
                     this.closeMenu();
+                });
+
+                // Page navigation
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const pageId = item.dataset.page;
+                        this.switchPage(pageId);
+                    });
                 });
 
                 // Add zikir
                 document.getElementById('addZikirBtn').addEventListener('click', () => {
                     const name = document.getElementById('newZikirName').value;
                     const target = document.getElementById('newZikirTarget').value;
-                    this.addZikir(name, target);
+                    const reading = document.getElementById('newZikirReading').value;
+                    const meaning = document.getElementById('newZikirMeaning').value;
+                    this.addZikir(name, target, reading, meaning);
                 });
 
-                // Enter tuşu ile ekle
                 document.getElementById('newZikirName').addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') {
                         document.getElementById('addZikirBtn').click();
@@ -1406,42 +2136,50 @@
                 });
 
                 // Settings
-                document.getElementById('soundToggle').addEventListener('change', (e) => {
-                    this.settings.sound = e.target.checked;
-                    this.saveData();
-                });
-
                 document.getElementById('vibrationToggle').addEventListener('change', (e) => {
                     this.settings.vibration = e.target.checked;
                     this.saveData();
                 });
 
-                // Load settings
-                document.getElementById('soundToggle').checked = this.settings.sound;
                 document.getElementById('vibrationToggle').checked = this.settings.vibration;
 
-                // Export
+                // Export/Import
                 document.getElementById('exportBtn').addEventListener('click', () => {
                     this.exportData();
                 });
 
-                // Import
                 document.getElementById('importFile').addEventListener('change', (e) => {
                     const file = e.target.files[0];
                     if (file) {
                         this.importData(file);
-                        e.target.value = ''; // Reset input
+                        e.target.value = '';
                     }
                 });
 
-                // Reset all
                 document.getElementById('resetAllBtn').addEventListener('click', () => {
                     this.resetAllData();
                 });
 
-                // Spacebar ile sayaç artırma
+                // Add memorial
+                document.getElementById('addMemorialBtn').addEventListener('click', () => {
+                    const name = document.getElementById('memorialName').value;
+                    const dateTime = document.getElementById('memorialDate').value;
+                    this.addMemorial(name, dateTime);
+                });
+
+                // Add job
+                document.getElementById('addJobBtn').addEventListener('click', () => {
+                    const name = document.getElementById('jobName').value;
+                    const dailyPay = document.getElementById('jobDailyPay').value;
+                    const workDays = document.getElementById('jobWorkDays').value;
+                    const startDate = document.getElementById('jobStartDate').value;
+                    const savingGoal = document.getElementById('jobSavingGoal').value;
+                    this.addJob(name, dailyPay, workDays, startDate, savingGoal);
+                });
+
+                // Keyboard shortcuts
                 document.addEventListener('keydown', (e) => {
-                    if (e.code === 'Space' && !e.target.matches('input, textarea')) {
+                    if (e.code === 'Space' && !e.target.matches('input, textarea') && this.currentPage === 'zikirPage') {
                         e.preventDefault();
                         this.incrementCount();
                     }
@@ -1449,16 +2187,7 @@
             }
         }
 
-        // ========== APP INITIALIZATION ==========
         const app = new ZikirmatikApp();
-
-        // Service Worker for offline support (optional)
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                // Not implementing full service worker in this version
-                // But the app works fully offline with localStorage
-            });
-        }
     </script>
 </body>
 </html>
