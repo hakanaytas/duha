@@ -2,11 +2,27 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>DUHA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Zikirmatik - Dijital Tesbih</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-primary: #FAFAFA;
+            --bg-secondary: #FFFFFF;
+            --text-primary: #1A1A1A;
+            --text-secondary: #666666;
+            --accent: #2D5F3F;
+            --accent-light: #4A8C5F;
+            --accent-glow: rgba(45, 95, 63, 0.15);
+            --border: #E5E5E5;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+            --radius: 24px;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -14,69 +30,95 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        :root {
-            --primary: #1a1a1a;
-            --secondary: #6b7280;
-            --accent: #3b82f6;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --bg: #ffffff;
-            --bg-secondary: #f9fafb;
-            --border: #e5e7eb;
-            --text: #111827;
-            --text-secondary: #6b7280;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg);
-            color: var(--text);
+            font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             overflow-x: hidden;
-        }
-
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            background: var(--bg);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            z-index: 1000;
-        }
-
-        .logo {
-            font-size: 22px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            color: var(--primary);
-        }
-
-        .hamburger {
-            width: 24px;
-            height: 18px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            cursor: pointer;
+            min-height: 100vh;
             position: relative;
         }
 
+        /* Decorative Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 30%, var(--accent-glow) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(45, 95, 63, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+            animation: floatPattern 60s ease-in-out infinite;
+        }
+
+        @keyframes floatPattern {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(-5%, 5%) rotate(3deg); }
+            66% { transform: translate(5%, -5%) rotate(-3deg); }
+        }
+
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 1.25rem 1.5rem;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: -0.02em;
+        }
+
+        .hamburger {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .hamburger:hover {
+            transform: scale(1.05);
+        }
+
+        .hamburger.active {
+            transform: rotate(90deg);
+        }
+
         .hamburger span {
-            width: 100%;
-            height: 2px;
-            background: var(--primary);
+            width: 24px;
+            height: 2.5px;
+            background: var(--text-primary);
             border-radius: 2px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
         }
 
         .hamburger.active span:nth-child(1) {
-            transform: translateY(8px) rotate(45deg);
+            transform: rotate(45deg) translate(6px, 6px);
         }
 
         .hamburger.active span:nth-child(2) {
@@ -84,106 +126,29 @@
         }
 
         .hamburger.active span:nth-child(3) {
-            transform: translateY(-8px) rotate(-45deg);
+            transform: rotate(-45deg) translate(6px, -6px);
         }
 
-        .drawer {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 85%;
-            max-width: 320px;
-            height: 100vh;
-            background: var(--bg);
-            box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
-            z-index: 2000;
-            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow-y: auto;
+        /* Main Content */
+        main {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            position: relative;
+            z-index: 1;
         }
 
-        .drawer.active {
-            right: 0;
-        }
-
-        .drawer-header {
-            padding: 30px 24px 20px 24px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .drawer-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 8px;
-        }
-
-        .drawer-subtitle {
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-
-        .drawer-menu {
-            padding: 12px 0;
-        }
-
-        .menu-item {
-            padding: 16px 24px;
-            cursor: pointer;
-            transition: background 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            font-size: 16px;
-            color: var(--text);
-        }
-
-        .menu-item:active {
-            background: var(--bg-secondary);
-        }
-
-        .menu-icon {
-            font-size: 20px;
-            width: 24px;
+        /* Zikir Display */
+        .zikir-display {
             text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.6s ease;
         }
 
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.4);
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-            z-index: 1500;
-        }
-
-        .overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .content {
-            margin-top: 60px;
-            padding: 20px;
-            min-height: calc(100vh - 60px);
-        }
-
-        .section {
-            display: none;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
+        @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(20px);
             }
             to {
                 opacity: 1;
@@ -191,61 +156,295 @@
             }
         }
 
-        .card {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-        }
-
-        .card-title {
-            font-size: 18px;
+        .zikir-name {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.75rem;
             font-weight: 600;
-            margin-bottom: 16px;
-            color: var(--primary);
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            line-height: 1.3;
+            letter-spacing: -0.01em;
         }
 
-        .input-group {
-            margin-bottom: 16px;
+        .count-display {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
+            text-shadow: 0 2px 8px var(--accent-glow);
         }
 
-        .input-label {
-            display: block;
-            font-size: 14px;
-            font-weight: 500;
+        .target-info {
+            font-size: 0.95rem;
             color: var(--text-secondary);
-            margin-bottom: 8px;
+            margin-bottom: 1rem;
         }
 
-        .input {
+        /* Progress Bar */
+        .progress-container {
             width: 100%;
-            padding: 12px 16px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            font-size: 16px;
-            background: var(--bg);
-            color: var(--text);
-            transition: all 0.2s;
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
         }
 
-        .input:focus {
-            outline: none;
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            border-radius: 4px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        .progress-text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        /* Counter Button */
+        .counter-button {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 2rem auto;
+            display: block;
+            box-shadow: 
+                var(--shadow-lg),
+                0 0 40px var(--accent-glow),
+                inset 0 -4px 16px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .counter-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .counter-button:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .counter-button:active {
+            transform: scale(0.95);
+            box-shadow: 
+                var(--shadow-md),
+                0 0 20px var(--accent-glow),
+                inset 0 -2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .counter-button:hover {
+            transform: scale(1.05);
+            box-shadow: 
+                0 12px 40px rgba(0, 0, 0, 0.15),
+                0 0 60px var(--accent-glow);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 3rem;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Side Menu */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 90%;
+            max-width: 400px;
+            height: 100vh;
+            background: var(--bg-secondary);
+            box-shadow: -4px 0 32px rgba(0, 0, 0, 0.1);
+            z-index: 200;
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
+
+        .side-menu.active {
+            right: 0;
+        }
+
+        .menu-header {
+            padding: 2rem 1.5rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            background: var(--bg-secondary);
+            z-index: 10;
+        }
+
+        .menu-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .menu-content {
+            padding: 1.5rem;
+        }
+
+        /* Menu Sections */
+        .menu-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 1rem;
+        }
+
+        /* Zikir List */
+        .zikir-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .zikir-item {
+            background: var(--bg-primary);
+            padding: 1.25rem;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .zikir-item:hover {
+            border-color: var(--accent-light);
+            transform: translateX(4px);
+        }
+
+        .zikir-item.active {
             border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            background: linear-gradient(135deg, rgba(45, 95, 63, 0.05), rgba(74, 140, 95, 0.05));
+        }
+
+        .zikir-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+
+        .zikir-item-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1rem;
+            flex: 1;
+        }
+
+        .zikir-item-count {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .zikir-item-progress {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .zikir-item-bar {
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 0.75rem;
+        }
+
+        .zikir-item-bar-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .zikir-item-actions {
+            display: flex;
+            gap: 0.5rem;
         }
 
         .btn {
-            width: 100%;
-            padding: 14px 20px;
+            padding: 0.5rem 1rem;
             border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 8px;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .btn-small {
+            padding: 0.4rem 0.75rem;
+            font-size: 0.8rem;
         }
 
         .btn-primary {
@@ -253,1258 +452,1013 @@
             color: white;
         }
 
-        .btn-primary:active {
-            transform: scale(0.98);
-            opacity: 0.9;
-        }
-
-        .btn-danger {
-            background: var(--danger);
-            color: white;
+        .btn-primary:hover {
+            background: var(--accent-light);
+            transform: translateY(-1px);
         }
 
         .btn-secondary {
             background: var(--bg-secondary);
-            color: var(--text);
+            color: var(--text-secondary);
             border: 1px solid var(--border);
         }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 16px;
+        .btn-secondary:hover {
+            background: var(--bg-primary);
+            border-color: var(--accent);
         }
 
-        .stat-card {
-            background: var(--bg-secondary);
+        .btn-danger {
+            background: #DC2626;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #B91C1C;
+        }
+
+        /* Add New Zikir */
+        .add-zikir-form {
+            background: var(--bg-primary);
+            padding: 1.25rem;
             border-radius: 12px;
-            padding: 16px;
+            border: 2px dashed var(--border);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
             border: 1px solid var(--border);
-        }
-
-        .stat-label {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-        }
-
-        .stat-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .stat-value.success {
-            color: var(--success);
-        }
-
-        .stat-value.danger {
-            color: var(--danger);
-        }
-
-        .stat-value.warning {
-            color: var(--warning);
-        }
-
-        .info-box {
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
             background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        /* Settings */
+        .settings-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .setting-item {
+            background: var(--bg-primary);
+            padding: 1rem 1.25rem;
             border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 16px;
-            border-left: 4px solid var(--accent);
-        }
-
-        .info-box.success {
-            border-left-color: var(--success);
-        }
-
-        .info-box.warning {
-            border-left-color: var(--warning);
-        }
-
-        .info-box.danger {
-            border-left-color: var(--danger);
-        }
-
-        .info-title {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 4px;
-            color: var(--primary);
-        }
-
-        .info-text {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
-
-        .list-item {
-            background: var(--bg-secondary);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .item-info {
+        .setting-label {
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+
+        /* Toggle Switch */
+        .toggle {
+            position: relative;
+            width: 48px;
+            height: 24px;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--border);
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        .toggle input:checked + .toggle-slider {
+            background: var(--accent);
+        }
+
+        .toggle input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Modal/Popup */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 300;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: var(--radius);
+            max-width: 400px;
+            width: 90%;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .modal-text {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .modal-actions .btn {
             flex: 1;
         }
 
-        .item-title {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 4px;
-        }
-
-        .item-subtitle {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-
-        .item-amount {
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-        .item-amount.expense {
-            color: var(--danger);
-        }
-
-        .item-amount.income {
-            color: var(--success);
-        }
-
-        .zikir-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 40px 20px;
-        }
-
-        .zikir-button {
-            width: 220px;
-            height: 220px;
-            border-radius: 50%;
-            border: none;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            font-size: 64px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.3);
-            transition: all 0.2s;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .zikir-button:active {
-            transform: scale(0.95);
-        }
-
-        .zikir-ring {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 3px solid rgba(255, 255, 255, 0.3);
+        /* Overlay */
+        .overlay {
+            display: none;
+            position: fixed;
             top: 0;
             left: 0;
-        }
-
-        .zikir-label {
-            margin-top: 24px;
-            font-size: 16px;
-            color: var(--text-secondary);
-            text-align: center;
-        }
-
-        .zikir-mode-selector {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 24px;
-            overflow-x: auto;
-            padding: 4px 0;
-        }
-
-        .mode-btn {
-            padding: 10px 20px;
-            border: 1px solid var(--border);
-            background: var(--bg);
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.2s;
-        }
-
-        .mode-btn.active {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-        }
-
-        .progress-bar {
             width: 100%;
-            height: 8px;
-            background: var(--bg-secondary);
-            border-radius: 8px;
-            overflow: hidden;
-            margin: 16px 0;
-        }
-
-        .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--accent), #667eea);
-            transition: width 0.3s;
-            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(2px);
+            z-index: 150;
+            transition: opacity 0.3s ease;
         }
 
-        .progress-text {
-            text-align: center;
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-top: 8px;
+        .overlay.active {
+            display: block;
         }
 
-        .notification {
+        /* Search Filter */
+        .search-box {
+            margin-bottom: 1rem;
+        }
+
+        /* Toast Notification */
+        .toast {
             position: fixed;
-            top: 70px;
-            left: 20px;
-            right: 20px;
-            background: var(--primary);
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--text-primary);
             color: white;
-            padding: 16px 20px;
+            padding: 1rem 1.5rem;
             border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-            transform: translateY(-120%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 3000;
+            box-shadow: var(--shadow-lg);
+            z-index: 400;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 90%;
         }
 
-        .notification.show {
-            transform: translateY(0);
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
         }
 
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-secondary);
-        }
-
-        .empty-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-            opacity: 0.3;
-        }
-
-        .empty-text {
-            font-size: 16px;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 8px;
-            margin-top: 8px;
-        }
-
-        .btn-group .btn {
-            margin-top: 0;
-        }
-
-        .full-width {
-            grid-column: 1 / -1;
-        }
-
-        .divider {
-            height: 1px;
-            background: var(--border);
-            margin: 24px 0;
-        }
-
-        .section-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 20px;
-        }
-
-        .chart-container {
-            max-width: 300px;
-            margin: 20px auto;
+        /* File Input Custom */
+        .file-input-wrapper {
             position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
         }
 
-        canvas {
-            max-width: 100%;
-            height: auto;
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
         }
 
-        .chart-legend {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
-            flex-wrap: wrap;
+        /* Responsive */
+        @media (max-width: 480px) {
+            .count-display {
+                font-size: 3.5rem;
+            }
+
+            .counter-button {
+                width: 180px;
+                height: 180px;
+            }
+
+            .zikir-name {
+                font-size: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
+        /* Loading Animation */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
-        .legend-color {
-            width: 16px;
-            height: 16px;
-            border-radius: 4px;
+        .loading {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        /* Ripple Effect */
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="logo">DUHA</div>
-        <div class="hamburger" onclick="toggleDrawer()">
-            <span></span>
-            <span></span>
-            <span></span>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo">Zikirmatik</div>
+            <button class="hamburger" id="menuToggle" aria-label="Menü">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
-    </div>
+    </header>
 
-    <div class="overlay" onclick="toggleDrawer()"></div>
-
-    <div class="drawer">
-        <div class="drawer-header">
-            <div class="drawer-title">Menü</div>
-            <div class="drawer-subtitle">Navigasyon</div>
-        </div>
-        <div class="drawer-menu">
-            <div class="menu-item" onclick="showSection('home')">
-                <span class="menu-icon">🏠</span>
-                <span>Ana Panel</span>
+    <!-- Main Content -->
+    <main>
+        <!-- Zikir Display -->
+        <div class="zikir-display">
+            <h1 class="zikir-name" id="currentZikirName">İHLAS-I ŞERİF</h1>
+            <div class="count-display" id="currentCount">0</div>
+            <div class="target-info">
+                Hedef: <span id="currentTarget">40000</span> | 
+                Kalan: <span id="remaining">40000</span>
             </div>
-            <div class="menu-item" onclick="showSection('earnings')">
-                <span class="menu-icon">💰</span>
-                <span>Kazanç & Yevmiye</span>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar" style="width: 0%"></div>
             </div>
-            <div class="menu-item" onclick="showSection('expenses')">
-                <span class="menu-icon">📉</span>
-                <span>Harcamalar</span>
-            </div>
-            <div class="menu-item" onclick="showSection('simulation')">
-                <span class="menu-icon">🧮</span>
-                <span>Simülasyon</span>
-            </div>
-            <div class="menu-item" onclick="showSection('zikir')">
-                <span class="menu-icon">🕌</span>
-                <span>Zikir</span>
-            </div>
-            <div class="menu-item" onclick="showSection('settings')">
-                <span class="menu-icon">⚙️</span>
-                <span>Ayarlar</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="notification" id="notification"></div>
-
-    <div class="content">
-        <!-- ANA PANEL -->
-        <div class="section active" id="home">
-            <h1 class="section-title">Ana Panel</h1>
-            
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Bu Hafta Kazanç</div>
-                    <div class="stat-value success" id="home-weekly-earnings">0₺</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Elde Kalan</div>
-                    <div class="stat-value" id="home-remaining">0₺</div>
-                </div>
-            </div>
-
-            <div id="home-advice"></div>
-
-            <div class="card">
-                <div class="card-title">Hızlı Bilgiler</div>
-                <div class="info-text" style="margin-bottom: 12px;">
-                    <strong>Günlük Yevmiye:</strong> <span id="home-daily-wage">0₺</span>
-                </div>
-                <div class="info-text" style="margin-bottom: 12px;">
-                    <strong>Şu Ana Kadar Kazanılan:</strong> <span id="home-earned-so-far">0₺</span>
-                </div>
-                <div class="info-text">
-                    <strong>Toplam Harcama:</strong> <span id="home-total-spent">0₺</span>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-title">Gelir & Gider Dağılımı</div>
-                <div class="chart-container">
-                    <canvas id="homeChart"></canvas>
-                </div>
-                <div class="chart-legend">
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: #10b981;"></div>
-                        <span>Gelir</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: #ef4444;"></div>
-                        <span>Gider</span>
-                    </div>
-                </div>
-            </div>
+            <div class="progress-text" id="progressText">%0 tamamlandı</div>
         </div>
 
-        <!-- KAZANÇ & YEVMİYE -->
-        <div class="section" id="earnings">
-            <h1 class="section-title">Kazanç & Yevmiye</h1>
+        <!-- Counter Button -->
+        <button class="counter-button" id="counterButton" aria-label="Sayaç Artır">
+            Zikir Say
+        </button>
 
-            <div class="card">
-                <div class="card-title">Temel Bilgiler</div>
-
-                <div class="input-group">
-                    <label class="input-label">Günlük Yevmiye (₺)</label>
-                    <input type="number" class="input" id="daily-wage" placeholder="500">
-                </div>
-
-                <div class="input-group">
-                    <label class="input-label">Bu Hafta Çalışılacak Gün</label>
-                    <input type="number" class="input" id="work-days" placeholder="6" min="0" max="7">
-                </div>
-
-                <div class="input-group">
-                    <label class="input-label">İzin Günü Sayısı</label>
-                    <input type="number" class="input" id="days-off" placeholder="0" min="0">
-                </div>
-
-                <div class="input-group">
-                    <label class="input-label">Ekstra Çalışma Günü</label>
-                    <input type="number" class="input" id="extra-days" placeholder="0" min="0">
-                </div>
-
-                <button class="btn btn-primary" onclick="saveEarnings()">Kaydet</button>
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Bugün</div>
+                <div class="stat-value" id="todayCount">0</div>
             </div>
-
-            <div class="card">
-                <div class="card-title">Mali Durum</div>
-
-                <div class="input-group">
-                    <label class="input-label">Şu Ana Kadar Kazanılan (₺)</label>
-                    <input type="number" class="input" id="earned-so-far" placeholder="0">
-                </div>
-
-                <div class="input-group">
-                    <label class="input-label">Şu Ana Kadar Harcanan (₺)</label>
-                    <input type="number" class="input" id="spent-so-far" placeholder="0">
-                </div>
-
-                <div class="input-group">
-                    <label class="input-label">Planlanan Harcamalar (₺)</label>
-                    <input type="number" class="input" id="planned-expenses" placeholder="0">
-                </div>
-
-                <button class="btn btn-primary" onclick="saveFinancialStatus()">Güncelle</button>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card full-width">
-                    <div class="stat-label">Bu Hafta Toplam Kazanç</div>
-                    <div class="stat-value success" id="total-weekly-earnings">0₺</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Kazanılmış Olmalı</div>
-                    <div class="stat-value" id="should-have-earned">0₺</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Elde Kalmalı</div>
-                    <div class="stat-value" id="should-remain">0₺</div>
-                </div>
-            </div>
-
-            <div id="earnings-advice"></div>
-        </div>
-
-        <!-- HARCAMALAR -->
-        <div class="section" id="expenses">
-            <h1 class="section-title">Harcamalar</h1>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Toplam Harcama</div>
-                    <div class="stat-value danger" id="total-expenses">0₺</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Bu Ay</div>
-                    <div class="stat-value" id="monthly-expenses">0₺</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-title">Yeni Harcama</div>
-
-                <div class="input-group">
-                    <label class="input-label">Açıklama</label>
-                    <input type="text" class="input" id="expense-desc" placeholder="Market alışverişi">
-                </div>
-
-                <div class="input-group">
-                    <label class="input-label">Tutar (₺)</label>
-                    <input type="number" class="input" id="expense-amount" placeholder="100">
-                </div>
-
-                <div class="input-group">
-                    <label class="input-label">Kategori</label>
-                    <select class="input" id="expense-category">
-                        <option value="Yemek">Yemek</option>
-                        <option value="Ulaşım">Ulaşım</option>
-                        <option value="Alışveriş">Alışveriş</option>
-                        <option value="Fatura">Fatura</option>
-                        <option value="Eğlence">Eğlence</option>
-                        <option value="Diğer">Diğer</option>
-                    </select>
-                </div>
-
-                <div class="input-group">
-                    <label class="input-label">Tarih</label>
-                    <input type="date" class="input" id="expense-date">
-                </div>
-
-                <button class="btn btn-primary" onclick="addExpense()">Harcama Ekle</button>
-            </div>
-
-            <div id="expenses-list"></div>
-        </div>
-
-        <!-- SİMÜLASYON -->
-        <div class="section" id="simulation">
-            <h1 class="section-title">İzin & Telafi Simülasyonu</h1>
-
-            <div class="card">
-                <div class="card-title">İzin Simülasyonu</div>
-
-                <div class="input-group">
-                    <label class="input-label">Kaç Gün İzin?</label>
-                    <input type="number" class="input" id="sim-days-off" placeholder="1" min="0">
-                </div>
-
-                <button class="btn btn-primary" onclick="simulateDaysOff()">Hesapla</button>
-
-                <div id="sim-off-result"></div>
-            </div>
-
-            <div class="card">
-                <div class="card-title">Ekstra Çalışma Simülasyonu</div>
-
-                <div class="input-group">
-                    <label class="input-label">Kaç Gün Ekstra?</label>
-                    <input type="number" class="input" id="sim-extra-days" placeholder="1" min="0">
-                </div>
-
-                <button class="btn btn-primary" onclick="simulateExtraDays()">Hesapla</button>
-
-                <div id="sim-extra-result"></div>
+            <div class="stat-card">
+                <div class="stat-label">Toplam</div>
+                <div class="stat-value" id="totalCount">0</div>
             </div>
         </div>
+    </main>
 
-        <!-- ZİKİR -->
-        <div class="section" id="zikir">
-            <h1 class="section-title">Zikir Paneli</h1>
-
-            <div class="card">
-                <div class="zikir-mode-selector">
-                    <button class="mode-btn active" onclick="switchZikirMode('free')">Serbest</button>
-                    <button class="mode-btn" onclick="switchZikirMode('tesbih')">Namaz Tesbihatı</button>
-                    <button class="mode-btn" onclick="switchZikirMode('zikir33')">33+33+33</button>
-                    <button class="mode-btn" onclick="switchZikirMode('ihlas')">40.000 İhlas</button>
-                </div>
-
-                <div id="zikir-free" class="zikir-panel">
-                    <div class="zikir-container">
-                        <button class="zikir-button" onclick="incrementFreeZikir()">
-                            <div class="zikir-ring"></div>
-                            <span id="free-count">0</span>
-                        </button>
-                        <div class="zikir-label">Serbest Zikir</div>
-                        <button class="btn btn-secondary" style="margin-top: 20px; max-width: 200px;" onclick="resetFreeZikir()">Sıfırla</button>
-                    </div>
-                </div>
-
-                <div id="zikir-tesbih" class="zikir-panel" style="display: none;">
-                    <div class="zikir-container">
-                        <div id="tesbih-current-name" style="font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--primary);">Subhanallah</div>
-                        <button class="zikir-button" onclick="incrementTesbih()">
-                            <div class="zikir-ring"></div>
-                            <span id="tesbih-count">0</span>
-                        </button>
-                        <div class="zikir-label" id="tesbih-label">0 / 33</div>
-                        <div class="progress-bar" style="margin-top: 24px; width: 100%; max-width: 300px;">
-                            <div class="progress-fill" id="tesbih-progress" style="width: 0%;"></div>
-                        </div>
-                        <button class="btn btn-secondary" style="margin-top: 20px; max-width: 200px;" onclick="resetTesbih()">Sıfırla</button>
-                    </div>
-                </div>
-
-                <div id="zikir-zikir33" class="zikir-panel" style="display: none;">
-                    <div class="zikir-container">
-                        <div id="zikir33-current-name" style="font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--primary);">Estağfirullah</div>
-                        <button class="zikir-button" onclick="incrementZikir33()">
-                            <div class="zikir-ring"></div>
-                            <span id="zikir33-count">0</span>
-                        </button>
-                        <div class="zikir-label" id="zikir33-label">0 / 33</div>
-                        <div class="progress-bar" style="margin-top: 24px; width: 100%; max-width: 300px;">
-                            <div class="progress-fill" id="zikir33-progress" style="width: 0%;"></div>
-                        </div>
-                        <button class="btn btn-secondary" style="margin-top: 20px; max-width: 200px;" onclick="resetZikir33()">Sıfırla</button>
-                    </div>
-                </div>
-
-                <div id="zikir-ihlas" class="zikir-panel" style="display: none;">
-                    <div class="zikir-container">
-                        <div style="font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--primary);">İhlas Suresi</div>
-                        <button class="zikir-button" onclick="incrementIhlas()">
-                            <div class="zikir-ring"></div>
-                            <span id="ihlas-count">0</span>
-                        </button>
-                        <div class="zikir-label">Kalan: <span id="ihlas-remaining">40.000</span></div>
-                        <div class="progress-bar" style="margin-top: 24px; width: 100%; max-width: 300px;">
-                            <div class="progress-fill" id="ihlas-progress" style="width: 0%;"></div>
-                        </div>
-                        <div class="progress-text" id="ihlas-percent">0%</div>
-                    </div>
-                </div>
-            </div>
+    <!-- Side Menu -->
+    <div class="side-menu" id="sideMenu">
+        <div class="menu-header">
+            <h2 class="menu-title">Zikirlerim</h2>
+            <p class="menu-subtitle">Tüm zikirlerinizi yönetin</p>
         </div>
+        <div class="menu-content">
+            <!-- Search -->
+            <div class="menu-section">
+                <input type="text" class="form-input search-box" id="searchBox" placeholder="🔍 Zikir ara...">
+            </div>
 
-        <!-- AYARLAR -->
-        <div class="section" id="settings">
-            <h1 class="section-title">Ayarlar</h1>
+            <!-- Zikir List -->
+            <div class="menu-section">
+                <h3 class="section-title">Kayıtlı Zikirler</h3>
+                <div class="zikir-list" id="zikirList"></div>
+            </div>
 
-            <div class="card">
-                <div class="card-title">Finansal Özet</div>
-                <div class="chart-container">
-                    <canvas id="settingsChart"></canvas>
+            <!-- Add New Zikir -->
+            <div class="menu-section">
+                <h3 class="section-title">Yeni Zikir Ekle</h3>
+                <div class="add-zikir-form">
+                    <div class="form-group">
+                        <label class="form-label">Zikir Adı</label>
+                        <input type="text" class="form-input" id="newZikirName" placeholder="Örn: Subhanallah">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Hedef Sayı</label>
+                        <input type="number" class="form-input" id="newZikirTarget" placeholder="Örn: 1000" value="1000">
+                    </div>
+                    <button class="btn btn-primary" id="addZikirBtn" style="width: 100%;">Ekle</button>
                 </div>
-                <div class="chart-legend">
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: #10b981;"></div>
-                        <span>Kazanılan</span>
+            </div>
+
+            <!-- Settings -->
+            <div class="menu-section">
+                <h3 class="section-title">Ayarlar</h3>
+                <div class="settings-list">
+                    <div class="setting-item">
+                        <span class="setting-label">Ses Efekti</span>
+                        <label class="toggle">
+                            <input type="checkbox" id="soundToggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
                     </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: #ef4444;"></div>
-                        <span>Harcanan</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: #3b82f6;"></div>
-                        <span>Kalan</span>
+                    <div class="setting-item">
+                        <span class="setting-label">Titreşim</span>
+                        <label class="toggle">
+                            <input type="checkbox" id="vibrationToggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
                     </div>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-title">Veri Yönetimi</div>
-                
-                <button class="btn btn-danger" onclick="resetAllData()">Tüm Verileri Sıfırla</button>
-                <button class="btn btn-secondary" onclick="resetEarningsData()">Kazanç Verilerini Sıfırla</button>
-                <button class="btn btn-secondary" onclick="resetExpensesData()">Harcama Verilerini Sıfırla</button>
-                <button class="btn btn-secondary" onclick="resetZikirData()">Zikir Verilerini Sıfırla</button>
-            </div>
-
-            <div class="card">
-                <div class="card-title">Uygulama Bilgisi</div>
-                <div class="info-text" style="line-height: 1.6;">
-                    <strong>DUHA</strong> - Kişisel Finans ve Zikir Takip Uygulaması<br>
-                    Versiyon: 1.0<br>
-                    Tüm veriler cihazınızda güvenle saklanır.
+            <!-- Data Management -->
+            <div class="menu-section">
+                <h3 class="section-title">Veri Yönetimi</h3>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <button class="btn btn-secondary" id="exportBtn">📥 Verileri Dışa Aktar</button>
+                    <div class="file-input-wrapper">
+                        <button class="btn btn-secondary" style="width: 100%;">📤 Verileri İçe Aktar</button>
+                        <input type="file" id="importFile" accept=".json">
+                    </div>
+                    <button class="btn btn-danger" id="resetAllBtn">🗑️ Tüm Verileri Sıfırla</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <h3 class="modal-title" id="modalTitle">Emin misiniz?</h3>
+            <p class="modal-text" id="modalText">Bu işlem geri alınamaz.</p>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="modalCancel">İptal</button>
+                <button class="btn btn-danger" id="modalConfirm">Onayla</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
 
     <script>
-        // LocalStorage Helpers
-        function saveData(key, value) {
-            localStorage.setItem(key, JSON.stringify(value));
-        }
+        // ============================================
+        // ZİKİRMATİK APP - COMPLETE IMPLEMENTATION
+        // ============================================
 
-        function loadData(key, defaultValue = null) {
-            const data = localStorage.getItem(key);
-            return data ? JSON.parse(data) : defaultValue;
-        }
-
-        // UI Controls
-        function toggleDrawer() {
-            const drawer = document.querySelector('.drawer');
-            const overlay = document.querySelector('.overlay');
-            const hamburger = document.querySelector('.hamburger');
-            
-            drawer.classList.toggle('active');
-            overlay.classList.toggle('active');
-            hamburger.classList.toggle('active');
-        }
-
-        function showSection(sectionId) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(sectionId).classList.add('active');
-            toggleDrawer();
-            
-            if (sectionId === 'home') {
-                updateHomePage();
-                drawHomeChart();
-            }
-            if (sectionId === 'earnings') loadEarningsData();
-            if (sectionId === 'expenses') loadExpensesData();
-            if (sectionId === 'settings') drawSettingsChart();
-        }
-
-        function showNotification(message, duration = 3000) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, duration);
-        }
-
-        // Pasta Grafik Çizimi
-        function drawPieChart(canvasId, data) {
-            const canvas = document.getElementById(canvasId);
-            if (!canvas) return;
-            
-            const ctx = canvas.getContext('2d');
-            canvas.width = 300;
-            canvas.height = 300;
-            
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            const total = data.reduce((sum, item) => sum + item.value, 0);
-            
-            if (total === 0) {
-                ctx.fillStyle = '#6b7280';
-                ctx.font = '16px -apple-system, BlinkMacSystemFont, sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillText('Veri yok', canvas.width / 2, canvas.height / 2);
-                return;
-            }
-            
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const radius = 100;
-            
-            let currentAngle = -Math.PI / 2;
-            
-            data.forEach(item => {
-                const sliceAngle = (item.value / total) * 2 * Math.PI;
+        class ZikirmatikApp {
+            constructor() {
+                this.currentZikirId = null;
+                this.zikirler = [];
+                this.settings = {
+                    sound: true,
+                    vibration: true
+                };
+                this.dailyStats = {};
                 
-                ctx.beginPath();
-                ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + sliceAngle);
-                ctx.lineTo(centerX, centerY);
-                ctx.fillStyle = item.color;
-                ctx.fill();
-                
-                const textAngle = currentAngle + sliceAngle / 2;
-                const textX = centerX + Math.cos(textAngle) * (radius * 0.65);
-                const textY = centerY + Math.sin(textAngle) * (radius * 0.65);
-                
-                ctx.fillStyle = 'white';
-                ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillText(item.label, textX, textY - 8);
-                ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
-                ctx.fillText(item.value.toFixed(0) + '₺', textX, textY + 8);
-                
-                currentAngle += sliceAngle;
-            });
-        }
-
-        function drawHomeChart() {
-            const financial = loadData('financialStatus', { earnedSoFar: 0, spentSoFar: 0 });
-            const expenses = loadData('expenses', []);
-            const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
-            
-            const data = [
-                { label: 'Gelir', value: financial.earnedSoFar, color: '#10b981' },
-                { label: 'Gider', value: totalExpenses, color: '#ef4444' }
-            ];
-            
-            drawPieChart('homeChart', data);
-        }
-
-        function drawSettingsChart() {
-            const financial = loadData('financialStatus', { earnedSoFar: 0, spentSoFar: 0 });
-            const expenses = loadData('expenses', []);
-            const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
-            const remaining = financial.earnedSoFar - totalExpenses;
-            
-            const data = [
-                { label: 'Kazanılan', value: financial.earnedSoFar, color: '#10b981' },
-                { label: 'Harcanan', value: totalExpenses, color: '#ef4444' },
-                { label: 'Kalan', value: remaining > 0 ? remaining : 0, color: '#3b82f6' }
-            ];
-            
-            drawPieChart('settingsChart', data);
-        }
-
-        // KAZANÇ & YEVMİYE
-        function saveEarnings() {
-            const data = {
-                dailyWage: parseFloat(document.getElementById('daily-wage').value) || 0,
-                workDays: parseInt(document.getElementById('work-days').value) || 0,
-                daysOff: parseInt(document.getElementById('days-off').value) || 0,
-                extraDays: parseInt(document.getElementById('extra-days').value) || 0
-            };
-            
-            saveData('earnings', data);
-            calculateEarnings();
-            showNotification('Kazanç bilgileri kaydedildi');
-        }
-
-        function saveFinancialStatus() {
-            const data = {
-                earnedSoFar: parseFloat(document.getElementById('earned-so-far').value) || 0,
-                spentSoFar: parseFloat(document.getElementById('spent-so-far').value) || 0,
-                plannedExpenses: parseFloat(document.getElementById('planned-expenses').value) || 0
-            };
-            
-            saveData('financialStatus', data);
-            calculateEarnings();
-            showNotification('Mali durum güncellendi');
-        }
-
-        function loadEarningsData() {
-            const earnings = loadData('earnings', {
-                dailyWage: 0,
-                workDays: 6,
-                daysOff: 0,
-                extraDays: 0
-            });
-            
-            const financial = loadData('financialStatus', {
-                earnedSoFar: 0,
-                spentSoFar: 0,
-                plannedExpenses: 0
-            });
-            
-            document.getElementById('daily-wage').value = earnings.dailyWage;
-            document.getElementById('work-days').value = earnings.workDays;
-            document.getElementById('days-off').value = earnings.daysOff;
-            document.getElementById('extra-days').value = earnings.extraDays;
-            
-            document.getElementById('earned-so-far').value = financial.earnedSoFar;
-            document.getElementById('spent-so-far').value = financial.spentSoFar;
-            document.getElementById('planned-expenses').value = financial.plannedExpenses;
-            
-            calculateEarnings();
-        }
-
-        function calculateEarnings() {
-            const earnings = loadData('earnings', {
-                dailyWage: 0,
-                workDays: 6,
-                daysOff: 0,
-                extraDays: 0
-            });
-            
-            const financial = loadData('financialStatus', {
-                earnedSoFar: 0,
-                spentSoFar: 0,
-                plannedExpenses: 0
-            });
-            
-            const actualWorkDays = earnings.workDays - earnings.daysOff + earnings.extraDays;
-            const totalWeeklyEarnings = earnings.dailyWage * actualWorkDays;
-            const shouldHaveEarned = earnings.dailyWage * earnings.workDays;
-            const shouldRemain = shouldHaveEarned - financial.spentSoFar - financial.plannedExpenses;
-            
-            document.getElementById('total-weekly-earnings').textContent = totalWeeklyEarnings.toFixed(0) + '₺';
-            document.getElementById('should-have-earned').textContent = shouldHaveEarned.toFixed(0) + '₺';
-            document.getElementById('should-remain').textContent = shouldRemain.toFixed(0) + '₺';
-            
-            const adviceContainer = document.getElementById('earnings-advice');
-            adviceContainer.innerHTML = '';
-            
-            const actualRemaining = financial.earnedSoFar - financial.spentSoFar;
-            
-            if (actualRemaining > shouldRemain) {
-                adviceContainer.innerHTML = '<div class="info-box success"><div class="info-title">Harika!</div><div class="info-text">İyi gidiyorsun, planın üstündesin.</div></div>';
-            } else if (actualRemaining < shouldRemain * 0.7) {
-                adviceContainer.innerHTML = '<div class="info-box danger"><div class="info-title">Dikkat!</div><div class="info-text">Fazla harcıyorsun, dikkatli ol.</div></div>';
-            } else if (earnings.daysOff > 0) {
-                adviceContainer.innerHTML = '<div class="info-box warning"><div class="info-title">Uyarı</div><div class="info-text">İzin günleri kazancını azaltıyor.</div></div>';
-            } else {
-                adviceContainer.innerHTML = '<div class="info-box"><div class="info-title">İyi</div><div class="info-text">Bütçe dengede görünüyor.</div></div>';
+                this.init();
             }
-        }
 
-        // HARCAMALAR
-        let expenses = loadData('expenses', []);
-
-        function addExpense() {
-            const desc = document.getElementById('expense-desc').value;
-            const amount = parseFloat(document.getElementById('expense-amount').value);
-            const category = document.getElementById('expense-category').value;
-            const date = document.getElementById('expense-date').value;
-            
-            if (!desc || !amount || !date) {
-                showNotification('Lütfen tüm alanları doldurun');
-                return;
+            // ========== INITIALIZATION ==========
+            init() {
+                this.loadData();
+                this.setupEventListeners();
+                this.updateUI();
+                this.updateStats();
             }
-            
-            expenses.push({
-                id: Date.now(),
-                desc,
-                amount,
-                category,
-                date
-            });
-            
-            saveData('expenses', expenses);
-            
-            document.getElementById('expense-desc').value = '';
-            document.getElementById('expense-amount').value = '';
-            document.getElementById('expense-date').value = '';
-            
-            loadExpensesData();
-            showNotification('Harcama eklendi');
-        }
 
-        function deleteExpense(id) {
-            if (confirm('Bu harcamayı silmek istediğinizden emin misiniz?')) {
-                expenses = expenses.filter(e => e.id !== id);
-                saveData('expenses', expenses);
-                loadExpensesData();
-                showNotification('Harcama silindi');
-            }
-        }
-
-        function loadExpensesData() {
-            expenses = loadData('expenses', []);
-            
-            const total = expenses.reduce((sum, e) => sum + e.amount, 0);
-            
-            const now = new Date();
-            const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-            const monthly = expenses.filter(e => new Date(e.date) >= monthStart).reduce((sum, e) => sum + e.amount, 0);
-            
-            document.getElementById('total-expenses').textContent = total.toFixed(0) + '₺';
-            document.getElementById('monthly-expenses').textContent = monthly.toFixed(0) + '₺';
-            
-            const list = document.getElementById('expenses-list');
-            
-            if (expenses.length === 0) {
-                list.innerHTML = '<div class="empty-state"><div class="empty-icon">📊</div><div class="empty-text">Henüz harcama kaydı yok</div></div>';
-                return;
-            }
-            
-            list.innerHTML = expenses.sort((a, b) => new Date(b.date) - new Date(a.date)).map(e => `
-                <div class="list-item">
-                    <div class="item-info">
-                        <div class="item-title">${e.desc}</div>
-                        <div class="item-subtitle">${e.category} • ${e.date}</div>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div class="item-amount expense">${e.amount.toFixed(0)}₺</div>
-                        <button class="btn btn-danger" style="padding: 8px 16px; margin: 0; width: auto; font-size: 14px;" onclick="deleteExpense(${e.id})">Sil</button>
-                    </div>
-                </div>
-            `).join('');
-            
-            document.getElementById('expense-date').valueAsDate = new Date();
-        }
-
-        // SİMÜLASYON
-        function simulateDaysOff() {
-            const earnings = loadData('earnings', { dailyWage: 0 });
-            const daysOff = parseInt(document.getElementById('sim-days-off').value) || 0;
-            
-            if (!earnings.dailyWage) {
-                showNotification('Önce günlük yevmiyeyi ayarlayın');
-                return;
-            }
-            
-            const loss = earnings.dailyWage * daysOff;
-            const remaining = (earnings.workDays || 6) - daysOff;
-            const newWeekly = earnings.dailyWage * remaining;
-            
-            const result = document.getElementById('sim-off-result');
-            result.innerHTML = `
-                <div class="divider"></div>
-                <div class="stats-grid">
-                    <div class="stat-card full-width">
-                        <div class="stat-label">Toplam Kayıp</div>
-                        <div class="stat-value danger">${loss.toFixed(0)}₺</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Yeni Haftalık</div>
-                        <div class="stat-value">${newWeekly.toFixed(0)}₺</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Kalan Gün</div>
-                        <div class="stat-value">${remaining}</div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function simulateExtraDays() {
-            const earnings = loadData('earnings', { dailyWage: 0 });
-            const extraDays = parseInt(document.getElementById('sim-extra-days').value) || 0;
-            
-            if (!earnings.dailyWage) {
-                showNotification('Önce günlük yevmiyeyi ayarlayın');
-                return;
-            }
-            
-            const gain = earnings.dailyWage * extraDays;
-            const newWeekly = earnings.dailyWage * ((earnings.workDays || 6) + extraDays);
-            
-            const result = document.getElementById('sim-extra-result');
-            result.innerHTML = `
-                <div class="divider"></div>
-                <div class="stats-grid">
-                    <div class="stat-card full-width">
-                        <div class="stat-label">Ekstra Kazanç</div>
-                        <div class="stat-value success">+${gain.toFixed(0)}₺</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Yeni Haftalık</div>
-                        <div class="stat-value">${newWeekly.toFixed(0)}₺</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Toplam Gün</div>
-                        <div class="stat-value">${(earnings.workDays || 6) + extraDays}</div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // ZİKİR
-        let currentZikirMode = 'free';
-        let freeZikir = loadData('freeZikir', 0);
-        let tesbihData = loadData('tesbih', { phase: 0, count: 0 });
-        let zikir33Data = loadData('zikir33', { phase: 0, count: 0 });
-        let ihlasCount = loadData('ihlas', 0);
-
-        const tesbihPhases = [
-            { name: 'Subhanallah', target: 33 },
-            { name: 'Elhamdülillah', target: 33 },
-            { name: 'Allahu Ekber', target: 34 }
-        ];
-
-        const zikir33Phases = [
-            { name: 'Estağfirullah', target: 33 },
-            { name: 'Allahümme Salli', target: 33 },
-            { name: 'La ilahe illallah', target: 33 }
-        ];
-
-        function switchZikirMode(mode) {
-            currentZikirMode = mode;
-            
-            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            document.querySelectorAll('.zikir-panel').forEach(panel => panel.style.display = 'none');
-            document.getElementById('zikir-' + mode).style.display = 'block';
-            
-            updateZikirDisplay();
-        }
-
-        function incrementFreeZikir() {
-            freeZikir++;
-            saveData('freeZikir', freeZikir);
-            updateZikirDisplay();
-        }
-
-        function resetFreeZikir() {
-            if (confirm('Serbest zikir sayacını sıfırlamak istediğinizden emin misiniz?')) {
-                freeZikir = 0;
-                saveData('freeZikir', freeZikir);
-                updateZikirDisplay();
-                showNotification('Sayaç sıfırlandı');
-            }
-        }
-
-        function incrementTesbih() {
-            const phase = tesbihPhases[tesbihData.phase];
-            tesbihData.count++;
-            
-            if (tesbihData.count >= phase.target) {
-                if (tesbihData.phase < tesbihPhases.length - 1) {
-                    tesbihData.phase++;
-                    tesbihData.count = 0;
-                    showNotification(phase.name + ' tamamlandı!');
+            // ========== DATA MANAGEMENT ==========
+            loadData() {
+                // Load zikirler from localStorage
+                const saved = localStorage.getItem('zikirmatik_data');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    this.zikirler = data.zikirler || [];
+                    this.currentZikirId = data.currentZikirId || null;
+                    this.settings = data.settings || this.settings;
+                    this.dailyStats = data.dailyStats || {};
                 } else {
-                    showNotification('Tüm tesbihatlar tamamlandı!');
-                    tesbihData = { phase: 0, count: 0 };
+                    // İlk kurulum - varsayılan zikirler
+                    this.initializeDefaultZikirler();
+                }
+
+                // Eğer currentZikirId yoksa veya geçersizse, ilk zikri seç
+                if (!this.currentZikirId || !this.zikirler.find(z => z.id === this.currentZikirId)) {
+                    this.currentZikirId = this.zikirler.length > 0 ? this.zikirler[0].id : null;
+                }
+
+                this.cleanOldDailyStats();
+            }
+
+            initializeDefaultZikirler() {
+                const defaults = [
+                    { name: 'İHLAS-I ŞERİF', target: 40000 },
+                    { name: 'NAMAZ SONRASI 33 SUBHANALLAH', target: 33 },
+                    { name: 'NAMAZ SONRASI 33 ELHAMDÜLİLLAH', target: 33 },
+                    { name: 'NAMAZ SONRASI 34 ALLAHU EKBER', target: 34 },
+                    { name: 'ESTAĞFİRULLAH', target: 100 },
+                    { name: 'LA İLAHE İLLALLAH', target: 100 },
+                    { name: 'ALLAHÜMME SALLİ ALA SEYYİDİNA MUHAMMED', target: 100 },
+                    { name: 'AYETÜL KÜRSİ', target: 100 }
+                ];
+
+                this.zikirler = defaults.map((z, index) => ({
+                    id: this.generateId(),
+                    name: z.name,
+                    count: 0,
+                    target: z.target,
+                    createdAt: Date.now()
+                }));
+
+                this.currentZikirId = this.zikirler[0].id;
+                this.saveData();
+            }
+
+            saveData() {
+                const data = {
+                    zikirler: this.zikirler,
+                    currentZikirId: this.currentZikirId,
+                    settings: this.settings,
+                    dailyStats: this.dailyStats,
+                    lastUpdate: Date.now()
+                };
+                localStorage.setItem('zikirmatik_data', JSON.stringify(data));
+            }
+
+            generateId() {
+                return Date.now().toString(36) + Math.random().toString(36).substr(2);
+            }
+
+            // ========== DAILY STATS MANAGEMENT ==========
+            getTodayKey() {
+                const today = new Date();
+                return `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+            }
+
+            cleanOldDailyStats() {
+                // Son 30 günden eski istatistikleri temizle
+                const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
+                const keys = Object.keys(this.dailyStats);
+                
+                keys.forEach(key => {
+                    const [year, month, day] = key.split('-').map(Number);
+                    const date = new Date(year, month - 1, day);
+                    if (date.getTime() < thirtyDaysAgo) {
+                        delete this.dailyStats[key];
+                    }
+                });
+            }
+
+            incrementDailyCount() {
+                const today = this.getTodayKey();
+                if (!this.dailyStats[today]) {
+                    this.dailyStats[today] = 0;
+                }
+                this.dailyStats[today]++;
+            }
+
+            getTodayCount() {
+                const today = this.getTodayKey();
+                return this.dailyStats[today] || 0;
+            }
+
+            // ========== ZIKIR OPERATIONS ==========
+            getCurrentZikir() {
+                return this.zikirler.find(z => z.id === this.currentZikirId);
+            }
+
+            incrementCount() {
+                const zikir = this.getCurrentZikir();
+                if (!zikir) return;
+
+                zikir.count++;
+                this.incrementDailyCount();
+                
+                // Ses çal
+                if (this.settings.sound) {
+                    this.playSound();
+                }
+
+                // Titreşim
+                if (this.settings.vibration && navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+
+                this.saveData();
+                this.updateUI();
+                this.updateStats();
+
+                // Hedef tamamlandıysa tebrik göster
+                if (zikir.count === zikir.target) {
+                    this.showToast(`🎉 ${zikir.name} hedefini tamamladınız!`);
                 }
             }
-            
-            saveData('tesbih', tesbihData);
-            updateZikirDisplay();
-        }
 
-        function resetTesbih() {
-            if (confirm('Tesbihat sayacını sıfırlamak istediğinizden emin misiniz?')) {
-                tesbihData = { phase: 0, count: 0 };
-                saveData('tesbih', tesbihData);
-                updateZikirDisplay();
-                showNotification('Tesbihat sıfırlandı');
+            addZikir(name, target) {
+                if (!name.trim()) {
+                    this.showToast('⚠️ Zikir adı boş olamaz!');
+                    return;
+                }
+
+                const newZikir = {
+                    id: this.generateId(),
+                    name: name.trim().toUpperCase(),
+                    count: 0,
+                    target: parseInt(target) || 1000,
+                    createdAt: Date.now()
+                };
+
+                this.zikirler.push(newZikir);
+                this.saveData();
+                this.renderZikirList();
+                this.showToast('✅ Yeni zikir eklendi!');
+
+                // Form temizle
+                document.getElementById('newZikirName').value = '';
+                document.getElementById('newZikirTarget').value = '1000';
             }
-        }
 
-        function incrementZikir33() {
-            const phase = zikir33Phases[zikir33Data.phase];
-            zikir33Data.count++;
-            
-            if (zikir33Data.count >= phase.target) {
-                if (zikir33Data.phase < zikir33Phases.length - 1) {
-                    zikir33Data.phase++;
-                    zikir33Data.count = 0;
-                    showNotification(phase.name + ' tamamlandı!');
-                } else {
-                    showNotification('Tüm zikirler tamamlandı!');
-                    zikir33Data = { phase: 0, count: 0 };
+            deleteZikir(id) {
+                const zikir = this.zikirler.find(z => z.id === id);
+                if (!zikir) return;
+
+                this.showConfirmModal(
+                    'Zikri Sil',
+                    `"${zikir.name}" adlı zikri silmek istediğinize emin misiniz? Bu işlem geri alınamaz.`,
+                    () => {
+                        this.zikirler = this.zikirler.filter(z => z.id !== id);
+                        
+                        // Silinen zikir aktifse, başka bir zikri aktif yap
+                        if (this.currentZikirId === id) {
+                            this.currentZikirId = this.zikirler.length > 0 ? this.zikirler[0].id : null;
+                        }
+
+                        this.saveData();
+                        this.renderZikirList();
+                        this.updateUI();
+                        this.showToast('🗑️ Zikir silindi!');
+                    }
+                );
+            }
+
+            resetZikir(id) {
+                const zikir = this.zikirler.find(z => z.id === id);
+                if (!zikir) return;
+
+                this.showConfirmModal(
+                    'Sayacı Sıfırla',
+                    `"${zikir.name}" sayacını sıfırlamak istediğinize emin misiniz?`,
+                    () => {
+                        zikir.count = 0;
+                        this.saveData();
+                        this.renderZikirList();
+                        this.updateUI();
+                        this.showToast('🔄 Sayaç sıfırlandı!');
+                    }
+                );
+            }
+
+            selectZikir(id) {
+                this.currentZikirId = id;
+                this.saveData();
+                this.updateUI();
+                this.renderZikirList();
+                
+                // Menüyü kapat
+                this.closeMenu();
+            }
+
+            // ========== UI UPDATES ==========
+            updateUI() {
+                const zikir = this.getCurrentZikir();
+                if (!zikir) {
+                    document.getElementById('currentZikirName').textContent = 'Zikir seçilmedi';
+                    document.getElementById('currentCount').textContent = '0';
+                    document.getElementById('currentTarget').textContent = '0';
+                    document.getElementById('remaining').textContent = '0';
+                    document.getElementById('progressBar').style.width = '0%';
+                    document.getElementById('progressText').textContent = '%0 tamamlandı';
+                    return;
+                }
+
+                document.getElementById('currentZikirName').textContent = zikir.name;
+                document.getElementById('currentCount').textContent = zikir.count.toLocaleString('tr-TR');
+                document.getElementById('currentTarget').textContent = zikir.target.toLocaleString('tr-TR');
+                
+                const remaining = Math.max(0, zikir.target - zikir.count);
+                document.getElementById('remaining').textContent = remaining.toLocaleString('tr-TR');
+
+                const progress = Math.min(100, (zikir.count / zikir.target) * 100);
+                document.getElementById('progressBar').style.width = progress + '%';
+                document.getElementById('progressText').textContent = `%${progress.toFixed(1)} tamamlandı`;
+            }
+
+            updateStats() {
+                const todayCount = this.getTodayCount();
+                const totalCount = this.zikirler.reduce((sum, z) => sum + z.count, 0);
+
+                document.getElementById('todayCount').textContent = todayCount.toLocaleString('tr-TR');
+                document.getElementById('totalCount').textContent = totalCount.toLocaleString('tr-TR');
+            }
+
+            renderZikirList() {
+                const container = document.getElementById('zikirList');
+                const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+                
+                const filtered = this.zikirler.filter(z => 
+                    z.name.toLowerCase().includes(searchTerm)
+                );
+
+                // Sırala: Aktif zikir en üstte, sonra isme göre
+                filtered.sort((a, b) => {
+                    if (a.id === this.currentZikirId) return -1;
+                    if (b.id === this.currentZikirId) return 1;
+                    return a.name.localeCompare(b.name, 'tr');
+                });
+
+                container.innerHTML = filtered.map(zikir => {
+                    const progress = Math.min(100, (zikir.count / zikir.target) * 100);
+                    const isActive = zikir.id === this.currentZikirId;
+
+                    return `
+                        <div class="zikir-item ${isActive ? 'active' : ''}" data-id="${zikir.id}">
+                            <div class="zikir-item-header">
+                                <div class="zikir-item-name">${zikir.name}</div>
+                                <div class="zikir-item-count">${zikir.count.toLocaleString('tr-TR')}</div>
+                            </div>
+                            <div class="zikir-item-progress">Hedef: ${zikir.target.toLocaleString('tr-TR')}</div>
+                            <div class="zikir-item-bar">
+                                <div class="zikir-item-bar-fill" style="width: ${progress}%"></div>
+                            </div>
+                            <div class="zikir-item-actions">
+                                <button class="btn btn-small btn-primary select-zikir" data-id="${zikir.id}">
+                                    ${isActive ? '✓ Seçili' : 'Seç'}
+                                </button>
+                                <button class="btn btn-small btn-secondary reset-zikir" data-id="${zikir.id}">Sıfırla</button>
+                                <button class="btn btn-small btn-danger delete-zikir" data-id="${zikir.id}">Sil</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                // Event listeners
+                container.querySelectorAll('.select-zikir').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.selectZikir(btn.dataset.id);
+                    });
+                });
+
+                container.querySelectorAll('.reset-zikir').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.resetZikir(btn.dataset.id);
+                    });
+                });
+
+                container.querySelectorAll('.delete-zikir').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.deleteZikir(btn.dataset.id);
+                    });
+                });
+
+                // Tıklayarak seçme
+                container.querySelectorAll('.zikir-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        this.selectZikir(item.dataset.id);
+                    });
+                });
+            }
+
+            // ========== MENU CONTROLS ==========
+            toggleMenu() {
+                const menu = document.getElementById('sideMenu');
+                const overlay = document.getElementById('overlay');
+                const hamburger = document.getElementById('menuToggle');
+
+                menu.classList.toggle('active');
+                overlay.classList.toggle('active');
+                hamburger.classList.toggle('active');
+
+                if (menu.classList.contains('active')) {
+                    this.renderZikirList();
                 }
             }
-            
-            saveData('zikir33', zikir33Data);
-            updateZikirDisplay();
-        }
 
-        function resetZikir33() {
-            if (confirm('Zikir sayacını sıfırlamak istediğinizden emin misiniz?')) {
-                zikir33Data = { phase: 0, count: 0 };
-                saveData('zikir33', zikir33Data);
-                updateZikirDisplay();
-                showNotification('Zikir sıfırlandı');
+            closeMenu() {
+                document.getElementById('sideMenu').classList.remove('active');
+                document.getElementById('overlay').classList.remove('active');
+                document.getElementById('menuToggle').classList.remove('active');
+            }
+
+            // ========== MODAL & TOAST ==========
+            showConfirmModal(title, text, onConfirm) {
+                const modal = document.getElementById('confirmModal');
+                document.getElementById('modalTitle').textContent = title;
+                document.getElementById('modalText').textContent = text;
+                
+                modal.classList.add('active');
+
+                const confirmBtn = document.getElementById('modalConfirm');
+                const cancelBtn = document.getElementById('modalCancel');
+
+                const confirm = () => {
+                    onConfirm();
+                    modal.classList.remove('active');
+                    cleanup();
+                };
+
+                const cancel = () => {
+                    modal.classList.remove('active');
+                    cleanup();
+                };
+
+                const cleanup = () => {
+                    confirmBtn.removeEventListener('click', confirm);
+                    cancelBtn.removeEventListener('click', cancel);
+                };
+
+                confirmBtn.addEventListener('click', confirm);
+                cancelBtn.addEventListener('click', cancel);
+            }
+
+            showToast(message) {
+                const toast = document.getElementById('toast');
+                toast.textContent = message;
+                toast.classList.add('show');
+
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+
+            // ========== DATA IMPORT/EXPORT ==========
+            exportData() {
+                const data = {
+                    zikirler: this.zikirler,
+                    settings: this.settings,
+                    dailyStats: this.dailyStats,
+                    exportDate: new Date().toISOString(),
+                    version: '1.0'
+                };
+
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `zikirmatik-yedek-${Date.now()}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+
+                this.showToast('📥 Veriler dışa aktarıldı!');
+            }
+
+            importData(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        
+                        if (!data.zikirler || !Array.isArray(data.zikirler)) {
+                            throw new Error('Geçersiz dosya formatı');
+                        }
+
+                        this.zikirler = data.zikirler;
+                        this.settings = data.settings || this.settings;
+                        this.dailyStats = data.dailyStats || {};
+                        
+                        if (!this.zikirler.find(z => z.id === this.currentZikirId)) {
+                            this.currentZikirId = this.zikirler[0]?.id || null;
+                        }
+
+                        this.saveData();
+                        this.updateUI();
+                        this.updateStats();
+                        this.renderZikirList();
+                        this.showToast('📤 Veriler içe aktarıldı!');
+                    } catch (error) {
+                        this.showToast('❌ Hata: Geçersiz dosya!');
+                    }
+                };
+                reader.readAsText(file);
+            }
+
+            resetAllData() {
+                this.showConfirmModal(
+                    'Tüm Verileri Sıfırla',
+                    'TÜM zikirleriniz ve istatistikleriniz silinecek. Bu işlem geri alınamaz!',
+                    () => {
+                        localStorage.removeItem('zikirmatik_data');
+                        this.zikirler = [];
+                        this.dailyStats = {};
+                        this.initializeDefaultZikirler();
+                        this.updateUI();
+                        this.updateStats();
+                        this.renderZikirList();
+                        this.showToast('🗑️ Tüm veriler sıfırlandı!');
+                    }
+                );
+            }
+
+            // ========== SOUND ==========
+            playSound() {
+                // Web Audio API ile basit beep sesi
+                try {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+
+                    oscillator.frequency.value = 800;
+                    oscillator.type = 'sine';
+                    
+                    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.1);
+                } catch (e) {
+                    // Ses çalınamazsa sessizce devam et
+                }
+            }
+
+            // ========== EVENT LISTENERS ==========
+            setupEventListeners() {
+                // Counter button
+                document.getElementById('counterButton').addEventListener('click', () => {
+                    this.incrementCount();
+                });
+
+                // Menu toggle
+                document.getElementById('menuToggle').addEventListener('click', () => {
+                    this.toggleMenu();
+                });
+
+                // Overlay (menü dışına tıklama)
+                document.getElementById('overlay').addEventListener('click', () => {
+                    this.closeMenu();
+                });
+
+                // Add zikir
+                document.getElementById('addZikirBtn').addEventListener('click', () => {
+                    const name = document.getElementById('newZikirName').value;
+                    const target = document.getElementById('newZikirTarget').value;
+                    this.addZikir(name, target);
+                });
+
+                // Enter tuşu ile ekle
+                document.getElementById('newZikirName').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        document.getElementById('addZikirBtn').click();
+                    }
+                });
+
+                // Search
+                document.getElementById('searchBox').addEventListener('input', () => {
+                    this.renderZikirList();
+                });
+
+                // Settings
+                document.getElementById('soundToggle').addEventListener('change', (e) => {
+                    this.settings.sound = e.target.checked;
+                    this.saveData();
+                });
+
+                document.getElementById('vibrationToggle').addEventListener('change', (e) => {
+                    this.settings.vibration = e.target.checked;
+                    this.saveData();
+                });
+
+                // Load settings
+                document.getElementById('soundToggle').checked = this.settings.sound;
+                document.getElementById('vibrationToggle').checked = this.settings.vibration;
+
+                // Export
+                document.getElementById('exportBtn').addEventListener('click', () => {
+                    this.exportData();
+                });
+
+                // Import
+                document.getElementById('importFile').addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        this.importData(file);
+                        e.target.value = ''; // Reset input
+                    }
+                });
+
+                // Reset all
+                document.getElementById('resetAllBtn').addEventListener('click', () => {
+                    this.resetAllData();
+                });
+
+                // Spacebar ile sayaç artırma
+                document.addEventListener('keydown', (e) => {
+                    if (e.code === 'Space' && !e.target.matches('input, textarea')) {
+                        e.preventDefault();
+                        this.incrementCount();
+                    }
+                });
             }
         }
 
-        function incrementIhlas() {
-            ihlasCount++;
-            
-            if (ihlasCount >= 40000) {
-                showNotification('40.000 İhlas tamamlandı! Sayaç sıfırlanıyor...');
-                ihlasCount = 0;
-            }
-            
-            saveData('ihlas', ihlasCount);
-            updateZikirDisplay();
-        }
+        // ========== APP INITIALIZATION ==========
+        const app = new ZikirmatikApp();
 
-        function updateZikirDisplay() {
-            document.getElementById('free-count').textContent = freeZikir;
-            
-            const tesbihPhase = tesbihPhases[tesbihData.phase];
-            document.getElementById('tesbih-current-name').textContent = tesbihPhase.name;
-            document.getElementById('tesbih-count').textContent = tesbihData.count;
-            document.getElementById('tesbih-label').textContent = tesbihData.count + ' / ' + tesbihPhase.target;
-            document.getElementById('tesbih-progress').style.width = ((tesbihData.count / tesbihPhase.target) * 100) + '%';
-            
-            const zikir33Phase = zikir33Phases[zikir33Data.phase];
-            document.getElementById('zikir33-current-name').textContent = zikir33Phase.name;
-            document.getElementById('zikir33-count').textContent = zikir33Data.count;
-            document.getElementById('zikir33-label').textContent = zikir33Data.count + ' / ' + zikir33Phase.target;
-            document.getElementById('zikir33-progress').style.width = ((zikir33Data.count / zikir33Phase.target) * 100) + '%';
-            
-            document.getElementById('ihlas-count').textContent = ihlasCount.toLocaleString();
-            document.getElementById('ihlas-remaining').textContent = (40000 - ihlasCount).toLocaleString();
-            const ihlasPercent = ((ihlasCount / 40000) * 100).toFixed(1);
-            document.getElementById('ihlas-progress').style.width = ihlasPercent + '%';
-            document.getElementById('ihlas-percent').textContent = ihlasPercent + '%';
+        // Service Worker for offline support (optional)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // Not implementing full service worker in this version
+                // But the app works fully offline with localStorage
+            });
         }
-
-        // ANA PANEL
-        function updateHomePage() {
-            const earnings = loadData('earnings', { dailyWage: 0, workDays: 6, daysOff: 0, extraDays: 0 });
-            const financial = loadData('financialStatus', { earnedSoFar: 0, spentSoFar: 0, plannedExpenses: 0 });
-            const expenses = loadData('expenses', []);
-            
-            const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
-            const actualWorkDays = earnings.workDays - earnings.daysOff + earnings.extraDays;
-            const weeklyEarnings = earnings.dailyWage * actualWorkDays;
-            const remaining = financial.earnedSoFar - financial.spentSoFar;
-            
-            document.getElementById('home-weekly-earnings').textContent = weeklyEarnings.toFixed(0) + '₺';
-            document.getElementById('home-remaining').textContent = remaining.toFixed(0) + '₺';
-            document.getElementById('home-daily-wage').textContent = earnings.dailyWage.toFixed(0) + '₺';
-            document.getElementById('home-earned-so-far').textContent = financial.earnedSoFar.toFixed(0) + '₺';
-            document.getElementById('home-total-spent').textContent = totalExpenses.toFixed(0) + '₺';
-            
-            const adviceContainer = document.getElementById('home-advice');
-            
-            if (remaining > weeklyEarnings * 0.7) {
-                adviceContainer.innerHTML = '<div class="info-box success"><div class="info-title">Mükemmel!</div><div class="info-text">Finansal durumun çok iyi, böyle devam et.</div></div>';
-            } else if (remaining < weeklyEarnings * 0.3) {
-                adviceContainer.innerHTML = '<div class="info-box danger"><div class="info-title">Dikkat!</div><div class="info-text">Harcamalarını kontrol altına al.</div></div>';
-            } else if (earnings.daysOff > 0 && earnings.extraDays === 0) {
-                adviceContainer.innerHTML = '<div class="info-box warning"><div class="info-title">Öneri</div><div class="info-text">İzin günlerini telafi etmek için ekstra çalışma faydalı olabilir.</div></div>';
-            } else {
-                adviceContainer.innerHTML = '<div class="info-box"><div class="info-title">İyi</div><div class="info-text">Dengeli bir durumdasın.</div></div>';
-            }
-        }
-
-        // AYARLAR
-        function resetAllData() {
-            if (confirm('Tüm verileri silmek istediğinizden EMİN MİSİNİZ? Bu işlem geri alınamaz!')) {
-                localStorage.clear();
-                location.reload();
-            }
-        }
-
-        function resetEarningsData() {
-            if (confirm('Kazanç verilerini sıfırlamak istediğinizden emin misiniz?')) {
-                localStorage.removeItem('earnings');
-                localStorage.removeItem('financialStatus');
-                showNotification('Kazanç verileri sıfırlandı');
-                loadEarningsData();
-            }
-        }
-
-        function resetExpensesData() {
-            if (confirm('Harcama verilerini sıfırlamak istediğinizden emin misiniz?')) {
-                localStorage.removeItem('expenses');
-                expenses = [];
-                showNotification('Harcama verileri sıfırlandı');
-                loadExpensesData();
-            }
-        }
-
-        function resetZikirData() {
-            if (confirm('Zikir verilerini sıfırlamak istediğinizden emin misiniz?')) {
-                localStorage.removeItem('freeZikir');
-                localStorage.removeItem('tesbih');
-                localStorage.removeItem('zikir33');
-                localStorage.removeItem('ihlas');
-                freeZikir = 0;
-                tesbihData = { phase: 0, count: 0 };
-                zikir33Data = { phase: 0, count: 0 };
-                ihlasCount = 0;
-                showNotification('Zikir verileri sıfırlandı');
-                updateZikirDisplay();
-            }
-        }
-
-        // İlk yükleme
-        window.addEventListener('DOMContentLoaded', () => {
-            updateHomePage();
-            loadEarningsData();
-            loadExpensesData();
-            updateZikirDisplay();
-            drawHomeChart();
-            document.getElementById('expense-date').valueAsDate = new Date();
-        });
     </script>
 </body>
 </html>
